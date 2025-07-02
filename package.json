@@ -1,0 +1,68 @@
+{
+  "name": "liquid-inspector",
+  "displayName": "Shopify Liquid Inspector",
+  "description": "A VS Code extension for inspecting Shopify Liquid variables with hover information",
+  "version": "1.0.0",
+  "license": "MIT",
+  "publisher": "ecmasx",
+  "main": "out/extension.js",
+  "engines": {
+    "vscode": "^1.60.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "shopify",
+    "liquid",
+    "template",
+    "hover",
+    "intellisense"
+  ],
+  "activationEvents": [
+    "onLanguage:liquid"
+  ],
+  "contributes": {
+    "configuration": {
+      "title": "Liquid Inspector",
+      "properties": {
+        "liquidInspector.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable Liquid Inspector"
+        },
+        "liquidInspector.showTypes": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show type information in hover"
+        },
+        "liquidInspector.showDescription": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show descriptions in hover"
+        },
+        "liquidInspector.maxPropertiesInHover": {
+          "type": "number",
+          "default": 25,
+          "minimum": 5,
+          "maximum": 100,
+          "description": "Maximum number of properties to show in hover tooltip"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.60.0",
+    "@types/node": "16.x",
+    "typescript": "^4.4.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shopify/liquid-inspector"
+  },
+  "icon": "images/logo.png"
+}
