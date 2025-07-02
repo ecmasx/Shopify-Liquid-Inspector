@@ -166,10 +166,14 @@ You can configure the extension through VS Code settings:
 - `liquidInspector.showDescription` - Show descriptions in hover tooltips
 - `liquidInspector.maxPropertiesInHover` - Maximum number of properties to show in hover tooltip (5-100, default: 25)
 
-## Contributing
+## GitHub
 
-Contributions are welcome! Please feel free to submit issues and pull requests.
+[https://github.com/ecmasx/Shopify-Liquid-Inspector](https://github.com/ecmasx/Shopify-Liquid-Inspector)
 
 ## License
 
 This project is licensed under the MIT License.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit issues and pull requests.

@@ -2,7 +2,7 @@
   "name": "liquid-inspector",
   "displayName": "Shopify Liquid Inspector",
   "description": "A VS Code extension for inspecting Shopify Liquid variables with hover information",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "license": "MIT",
   "publisher": "ecmasx",
   "main": "out/extension.js",
@@ -62,7 +62,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/shopify/liquid-inspector"
+    "url": "https://github.com/ecmasx/Shopify-Liquid-Inspector"
   },
   "icon": "images/logo.png"
 }
