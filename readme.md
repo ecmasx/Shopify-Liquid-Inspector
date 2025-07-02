@@ -146,26 +146,6 @@ And many more specialized objects for advanced Shopify features, B2B functionali
 3. Invalid properties will be highlighted with warning squiggles
 4. View available properties in the hover tooltip
 
-### Examples
-
-✅ **Valid properties:**
-
-```liquid
-{{ product.title }}
-{{ product.price }}
-{{ product.variants.first.price }}
-{{ cart.item_count }}
-{{ customer.email }}
-```
-
-⚠️ **Invalid properties (will show warnings):**
-
-```liquid
-{{ product.invalid_property }}
-{{ cart.nonexistent_field }}
-{{ customer.wrong_property }}
-```
-
 ## Configuration
 
 You can configure the extension through VS Code settings:
@@ -173,7 +153,6 @@ You can configure the extension through VS Code settings:
 ```json
 {
   "liquidInspector.enabled": true,
-  "liquidInspector.diagnostics.enabled": true,
   "liquidInspector.showTypes": true,
   "liquidInspector.showDescription": true,
   "liquidInspector.maxPropertiesInHover": 25
@@ -183,7 +162,6 @@ You can configure the extension through VS Code settings:
 ### Settings
 
 - `liquidInspector.enabled` - Enable/disable the extension
-- `liquidInspector.diagnostics.enabled` - Enable/disable property validation diagnostics
 - `liquidInspector.showTypes` - Show type information in hover tooltips
 - `liquidInspector.showDescription` - Show descriptions in hover tooltips
 - `liquidInspector.maxPropertiesInHover` - Maximum number of properties to show in hover tooltip (5-100, default: 25)
