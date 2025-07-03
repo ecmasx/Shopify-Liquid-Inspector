@@ -6,9 +6,9 @@ A lightweight VS Code extension that gives you **instant hover documentation** a
 
 • Hover over **objects** (`product`, `collection`, …) to see their properties and types.
 
-• Hover over **filters** and **tags** to view syntax, parameters and examples.
+• Hover over **filters** to view syntax, parameters and examples.
 
-• Warns you about **invalid or deprecated** properties, filters and tags.
+• Warns you about **invalid or deprecated** properties, filters.
 
 • Works perfectly with the official _Shopify Liquid_ extension – keep it installed for syntax highlighting, add Liquid Inspector for deep insight.
 
@@ -20,7 +20,7 @@ A lightweight VS Code extension that gives you **instant hover documentation** a
 
    ```liquid
    {{ product.price | money }}         <!-- filter docs -->
-   {% for product in collection.products %}  <!-- tag docs -->
+   {% for product in collection.products %}
      {{ product.title }}               <!-- object docs -->
    {% endfor %}
    ```
@@ -36,7 +36,6 @@ A lightweight VS Code extension that gives you **instant hover documentation** a
 | `liquidInspector.showDescription`        | Show descriptions in hovers  | `true`  |
 | `liquidInspector.showDeprecatedWarnings` | Highlight deprecated items   | `true`  |
 | `liquidInspector.enableFilterHover`      | Enable filter hover docs     | `true`  |
-| `liquidInspector.enableTagHover`         | Enable tag hover docs        | `true`  |
 
 > Tip: Set `liquidInspector.maxPropertiesInHover` if you only want to see a few properties.
 

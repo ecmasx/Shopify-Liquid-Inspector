@@ -1,19 +1,16 @@
 import * as vscode from "vscode";
 import { ShopifyObjectRegistry } from "../schemas/shopifyObjects";
 import { ShopifyFilterRegistry } from "../schemas/shopifyFilters";
-import { ShopifyTagRegistry } from "../schemas/shopifyTags";
 import { LiquidParser } from "../parsers/liquidParser";
 
 export class LiquidHoverProvider implements vscode.HoverProvider {
   private registry: ShopifyObjectRegistry;
   private filterRegistry: ShopifyFilterRegistry;
-  private tagRegistry: ShopifyTagRegistry;
   private parser: LiquidParser;
 
   constructor() {
     this.registry = new ShopifyObjectRegistry();
     this.filterRegistry = new ShopifyFilterRegistry();
-    this.tagRegistry = new ShopifyTagRegistry();
     this.parser = new LiquidParser();
   }
 
@@ -43,17 +40,6 @@ export class LiquidHoverProvider implements vscode.HoverProvider {
             config
           );
           return new vscode.Hover(markdown, filter.range);
-        }
-      }
-    }
-
-    if (config.get("enableTagHover", true)) {
-      const tag = this.parser.getTagAtPosition(line.text, position.character);
-      if (tag) {
-        const tagInfo = this.tagRegistry.getTag(tag.name);
-        if (tagInfo) {
-          const markdown = this.createTagHoverContent(tag, tagInfo, config);
-          return new vscode.Hover(markdown, tag.range);
         }
       }
     }
@@ -151,83 +137,6 @@ export class LiquidHoverProvider implements vscode.HoverProvider {
       md.appendMarkdown("---\n\n");
       md.appendMarkdown("### Examples\n\n");
       filterInfo.examples.forEach((example: string) => {
-        md.appendMarkdown(`\`\`\`liquid\n${example}\n\`\`\`\n\n`);
-      });
-    }
-
-    return md;
-  }
-
-  private createTagHoverContent(
-    tag: any,
-    tagInfo: any,
-    config: vscode.WorkspaceConfiguration
-  ): vscode.MarkdownString {
-    const md = new vscode.MarkdownString();
-    md.isTrusted = true;
-    md.supportHtml = true;
-
-    md.appendMarkdown(`## \`${tag.name}\` Tag\n\n`);
-    md.appendMarkdown(`**Category:** ${tagInfo.category}\n\n`);
-
-    if (config.get("showDescription", true) && tagInfo.description) {
-      md.appendMarkdown(`*${tagInfo.description}*\n\n`);
-    }
-    if (tagInfo.syntax) {
-      md.appendMarkdown(`**Syntax:** \`${tagInfo.syntax}\`\n\n`);
-    }
-    if (config.get("showDeprecatedWarnings", true) && tagInfo.deprecated) {
-      md.appendMarkdown(
-        `⚠️ **Deprecated:** This tag is deprecated and should be avoided.\n\n`
-      );
-    }
-
-    if (tagInfo.endTag) {
-      md.appendMarkdown(`**End Tag:** \`{% ${tagInfo.endTag} %}\`\n\n`);
-    } else if (tagInfo.selfClosing) {
-      md.appendMarkdown(`**Type:** Self-closing tag\n\n`);
-    }
-
-    if (
-      config.get("showTagParameters", true) &&
-      tagInfo.parameters &&
-      Object.keys(tagInfo.parameters).length > 0
-    ) {
-      md.appendMarkdown("---\n\n");
-      md.appendMarkdown("### Parameters\n\n");
-
-      md.appendMarkdown("| Parameter | Type | Description | Required |\n");
-      md.appendMarkdown("|-----------|------|-------------|----------|\n");
-
-      Object.entries(tagInfo.parameters).forEach(
-        ([name, param]: [string, any]) => {
-          const type = param.type || "string";
-          const description = param.description || "";
-          const required = param.required ? "✓" : "";
-          md.appendMarkdown(
-            `| \`${name}\` | \`${type}\` | ${description} | ${required} |\n`
-          );
-        }
-      );
-    }
-
-    if (tag.parameters && tag.parameters.length > 0) {
-      md.appendMarkdown("---\n\n");
-      md.appendMarkdown("### Current Parameters\n\n");
-      tag.parameters.forEach((param: string, index: number) => {
-        md.appendMarkdown(`${index + 1}. \`${param}\`\n`);
-      });
-      md.appendMarkdown("\n");
-    }
-
-    if (
-      config.get("showTagExamples", true) &&
-      tagInfo.examples &&
-      tagInfo.examples.length > 0
-    ) {
-      md.appendMarkdown("---\n\n");
-      md.appendMarkdown("### Examples\n\n");
-      tagInfo.examples.forEach((example: string) => {
         md.appendMarkdown(`\`\`\`liquid\n${example}\n\`\`\`\n\n`);
       });
     }
