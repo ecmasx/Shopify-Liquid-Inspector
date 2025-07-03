@@ -39,7 +39,6 @@ export class ShopifyTagRegistry {
 
   private initializeTags() {
     this.tags = {
-      // Conditional Tags
       if: {
         name: "if",
         description: "Renders an expression if a specific condition is true",
@@ -107,7 +106,6 @@ export class ShopifyTagRegistry {
         ],
       },
 
-      // HTML Tags
       form: {
         name: "form",
         description:
@@ -143,7 +141,6 @@ export class ShopifyTagRegistry {
         ],
       },
 
-      // Iteration Tags
       for: {
         name: "for",
         description: "Renders an expression for every item in an array",
@@ -251,7 +248,6 @@ export class ShopifyTagRegistry {
         ],
       },
 
-      // Syntax Tags
       comment: {
         name: "comment",
         description: "Prevents an expression from being rendered or output",
@@ -307,7 +303,6 @@ export class ShopifyTagRegistry {
         ],
       },
 
-      // Theme Tags
       content_for: {
         name: "content_for",
         description: "Creates a designated area where blocks can be rendered",
@@ -422,7 +417,6 @@ export class ShopifyTagRegistry {
         ],
       },
 
-      // Variable Tags
       assign: {
         name: "assign",
         description: "Creates a new variable",

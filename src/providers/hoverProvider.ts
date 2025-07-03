@@ -29,7 +29,6 @@ export class LiquidHoverProvider implements vscode.HoverProvider {
 
     const line = document.lineAt(position.line);
 
-    // First check if we're hovering over a filter
     if (config.get("enableFilterHover", true)) {
       const filter = this.parser.getFilterAtPosition(
         line.text,
@@ -48,7 +47,6 @@ export class LiquidHoverProvider implements vscode.HoverProvider {
       }
     }
 
-    // If not a filter, check for tags
     if (config.get("enableTagHover", true)) {
       const tag = this.parser.getTagAtPosition(line.text, position.character);
       if (tag) {
@@ -60,7 +58,6 @@ export class LiquidHoverProvider implements vscode.HoverProvider {
       }
     }
 
-    // If not a filter or tag, check for variables (existing logic)
     const variable = this.parser.getVariableAtPosition(
       line.text,
       position.character
@@ -93,33 +90,27 @@ export class LiquidHoverProvider implements vscode.HoverProvider {
     md.isTrusted = true;
     md.supportHtml = true;
 
-    // Filter name and category
     md.appendMarkdown(`## \`${filter.name}\` Filter\n\n`);
     md.appendMarkdown(`**Category:** ${filterInfo.category}\n\n`);
 
-    // Show description
     if (config.get("showDescription", true) && filterInfo.description) {
       md.appendMarkdown(`*${filterInfo.description}*\n\n`);
     }
 
-    // Show return type
     if (config.get("showTypes", true) && filterInfo.returnType) {
       md.appendMarkdown(`**Returns:** \`${filterInfo.returnType}\`\n\n`);
     }
 
-    // Show syntax
     if (filterInfo.syntax) {
       md.appendMarkdown(`**Syntax:** \`${filterInfo.syntax}\`\n\n`);
     }
 
-    // Show deprecation warning
     if (config.get("showDeprecatedWarnings", true) && filterInfo.deprecated) {
       md.appendMarkdown(
         `⚠️ **Deprecated:** This filter is deprecated and should be avoided.\n\n`
       );
     }
 
-    // Show parameters if any
     if (
       config.get("showFilterParameters", true) &&
       filterInfo.parameters &&
@@ -143,7 +134,6 @@ export class LiquidHoverProvider implements vscode.HoverProvider {
       );
     }
 
-    // Show current filter parameters if any
     if (filter.parameters && filter.parameters.length > 0) {
       md.appendMarkdown("---\n\n");
       md.appendMarkdown("### Current Parameters\n\n");
@@ -153,7 +143,6 @@ export class LiquidHoverProvider implements vscode.HoverProvider {
       md.appendMarkdown("\n");
     }
 
-    // Show examples
     if (
       config.get("showFilterExamples", true) &&
       filterInfo.examples &&
@@ -178,35 +167,27 @@ export class LiquidHoverProvider implements vscode.HoverProvider {
     md.isTrusted = true;
     md.supportHtml = true;
 
-    // Tag name and category
     md.appendMarkdown(`## \`${tag.name}\` Tag\n\n`);
     md.appendMarkdown(`**Category:** ${tagInfo.category}\n\n`);
 
-    // Show description
     if (config.get("showDescription", true) && tagInfo.description) {
       md.appendMarkdown(`*${tagInfo.description}*\n\n`);
     }
-
-    // Show syntax
     if (tagInfo.syntax) {
       md.appendMarkdown(`**Syntax:** \`${tagInfo.syntax}\`\n\n`);
     }
-
-    // Show deprecation warning
     if (config.get("showDeprecatedWarnings", true) && tagInfo.deprecated) {
       md.appendMarkdown(
         `⚠️ **Deprecated:** This tag is deprecated and should be avoided.\n\n`
       );
     }
 
-    // Show tag type information
     if (tagInfo.endTag) {
       md.appendMarkdown(`**End Tag:** \`{% ${tagInfo.endTag} %}\`\n\n`);
     } else if (tagInfo.selfClosing) {
       md.appendMarkdown(`**Type:** Self-closing tag\n\n`);
     }
 
-    // Show parameters if any
     if (
       config.get("showTagParameters", true) &&
       tagInfo.parameters &&
@@ -230,7 +211,6 @@ export class LiquidHoverProvider implements vscode.HoverProvider {
       );
     }
 
-    // Show current tag parameters if any
     if (tag.parameters && tag.parameters.length > 0) {
       md.appendMarkdown("---\n\n");
       md.appendMarkdown("### Current Parameters\n\n");
@@ -240,7 +220,6 @@ export class LiquidHoverProvider implements vscode.HoverProvider {
       md.appendMarkdown("\n");
     }
 
-    // Show examples
     if (
       config.get("showTagExamples", true) &&
       tagInfo.examples &&
@@ -275,7 +254,6 @@ export class LiquidHoverProvider implements vscode.HoverProvider {
       md.appendMarkdown(`*${objectInfo.description}*\n\n`);
     }
 
-    // Show deprecation warning for objects
     if (config.get("showDeprecatedWarnings", true) && objectInfo.deprecated) {
       md.appendMarkdown(`⚠️ **Deprecated:** ${objectInfo.deprecated}\n\n`);
     }
@@ -290,7 +268,6 @@ export class LiquidHoverProvider implements vscode.HoverProvider {
         if (propertyInfo.description) {
           md.appendMarkdown(`**Description:** ${propertyInfo.description}\n\n`);
         }
-        // Show property deprecation if exists
         if (propertyInfo.deprecated) {
           md.appendMarkdown(
             `⚠️ **Property Deprecated:** ${propertyInfo.deprecated}\n\n`

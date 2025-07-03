@@ -38,7 +38,6 @@ export class ShopifyFilterRegistry {
 
   private initializeFilters() {
     this.filters = {
-      // Array Filters
       compact: {
         name: "compact",
         description: "Removes any nil items from an array",
@@ -255,7 +254,6 @@ export class ShopifyFilterRegistry {
         examples: ["{{ collection.products | where: 'available' }}"],
       },
 
-      // Cart Filters
       item_count_for_variant: {
         name: "item_count_for_variant",
         description:
@@ -285,7 +283,6 @@ export class ShopifyFilterRegistry {
         examples: ["{{ cart | line_items_for: product }}"],
       },
 
-      // Collection Filters
       highlight_active_tag: {
         name: "highlight_active_tag",
         description:
@@ -382,7 +379,6 @@ export class ShopifyFilterRegistry {
         },
       },
 
-      // Color Filters
       brightness_difference: {
         name: "brightness_difference",
         description:
@@ -597,7 +593,6 @@ export class ShopifyFilterRegistry {
         },
       },
 
-      // Customer Filters
       avatar: {
         name: "avatar",
         description:
@@ -651,7 +646,6 @@ export class ShopifyFilterRegistry {
         },
       },
 
-      // Default Filters
       default: {
         name: "default",
         description:
@@ -695,7 +689,6 @@ export class ShopifyFilterRegistry {
         },
       },
 
-      // Font Filters
       font_face: {
         name: "font_face",
         description:
@@ -745,7 +738,6 @@ export class ShopifyFilterRegistry {
         },
       },
 
-      // Format Filters
       date: {
         name: "date",
         description: "Converts a timestamp into another date format",
@@ -805,7 +797,6 @@ export class ShopifyFilterRegistry {
         },
       },
 
-      // HTML Filters
       class_list: {
         name: "class_list",
         description:
@@ -935,7 +926,6 @@ export class ShopifyFilterRegistry {
         },
       },
 
-      // Hosted File Filters
       asset_img_url: {
         name: "asset_img_url",
         description:
@@ -1016,7 +1006,6 @@ export class ShopifyFilterRegistry {
         syntax: "string | shopify_asset_url",
       },
 
-      // Localization Filters
       currency_selector: {
         name: "currency_selector",
         description:
@@ -1073,7 +1062,6 @@ export class ShopifyFilterRegistry {
         },
       },
 
-      // Math Filters
       abs: {
         name: "abs",
         description: "Returns the absolute value of a number",
@@ -1194,7 +1182,6 @@ export class ShopifyFilterRegistry {
         },
       },
 
-      // Media Filters
       article_img_url: {
         name: "article_img_url",
         description: "Returns the CDN URL for an article's image",
@@ -1382,7 +1369,6 @@ export class ShopifyFilterRegistry {
         },
       },
 
-      // Metafield Filters
       metafield_tag: {
         name: "metafield_tag",
         description: "Generates an HTML element to host the metafield data",
@@ -1417,7 +1403,6 @@ export class ShopifyFilterRegistry {
         },
       },
 
-      // Money Filters
       money: {
         name: "money",
         description:
@@ -1456,7 +1441,6 @@ export class ShopifyFilterRegistry {
         syntax: "number | money_without_trailing_zeros",
       },
 
-      // Payment Filters
       payment_button: {
         name: "payment_button",
         description:
@@ -1491,7 +1475,6 @@ export class ShopifyFilterRegistry {
         syntax: "payment_type | payment_type_svg_tag",
       },
 
-      // String Filters
       append: {
         name: "append",
         description: "Adds a given string to the end of a string",
@@ -1896,7 +1879,6 @@ export class ShopifyFilterRegistry {
         syntax: "string | url_param_escape",
       },
 
-      // Tag Filters
       link_to_add_tag: {
         name: "link_to_add_tag",
         description:

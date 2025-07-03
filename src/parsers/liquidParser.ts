@@ -59,7 +59,6 @@ export class LiquidParser {
         const relativePosition = position - expr.start;
 
         for (const filter of filters) {
-          // Find filter position within the expression
           const filterStart = expr.content.indexOf(filter.name);
           const filterEnd = filterStart + filter.name.length;
 
@@ -87,7 +86,6 @@ export class LiquidParser {
 
     for (const expr of liquidExpressions) {
       if (position >= expr.start && position <= expr.end) {
-        // Only check tag expressions ({% %})
         if (!expr.content.startsWith("{{")) {
           const tag = this.parseTagInExpression(
             expr.content,
@@ -206,7 +204,6 @@ export class LiquidParser {
     const filters = [];
     const parts = content.split("|");
 
-    // Skip the first part (it's the variable)
     for (let i = 1; i < parts.length; i++) {
       const filterPart = parts[i].trim();
       const colonIndex = filterPart.indexOf(":");
@@ -218,7 +215,6 @@ export class LiquidParser {
         filterName = filterPart.substring(0, colonIndex).trim();
         const paramString = filterPart.substring(colonIndex + 1).trim();
 
-        // Parse parameters (simple implementation)
         if (paramString) {
           parameters = paramString
             .split(",")
@@ -287,14 +283,12 @@ export class LiquidParser {
     content: string,
     position: number
   ): Omit<LiquidTag, "range"> | null {
-    // Parse tag name and parameters from tag content
     const parts = content.trim().split(/\s+/);
     if (parts.length === 0) return null;
 
     const tagName = parts[0];
     const parameters = parts.slice(1);
 
-    // Check if the cursor position is within the tag name
     const tagStart = content.indexOf(tagName);
     const tagEnd = tagStart + tagName.length;
 
