@@ -13,6 +13,12 @@ export interface LiquidFilter {
   range: vscode.Range;
 }
 
+export interface LiquidTag {
+  name: string;
+  parameters: string[];
+  range: vscode.Range;
+}
+
 export interface LiquidExpression {
   variables: LiquidVariable[];
   filters: LiquidFilter[];
@@ -66,6 +72,33 @@ export class LiquidParser {
               range: new vscode.Range(
                 new vscode.Position(0, expr.start + filterStart),
                 new vscode.Position(0, expr.start + filterEnd)
+              ),
+            };
+          }
+        }
+      }
+    }
+
+    return null;
+  }
+
+  getTagAtPosition(text: string, position: number): LiquidTag | null {
+    const liquidExpressions = this.findLiquidExpressions(text);
+
+    for (const expr of liquidExpressions) {
+      if (position >= expr.start && position <= expr.end) {
+        // Only check tag expressions ({% %})
+        if (!expr.content.startsWith("{{")) {
+          const tag = this.parseTagInExpression(
+            expr.content,
+            position - expr.start
+          );
+          if (tag) {
+            return {
+              ...tag,
+              range: new vscode.Range(
+                new vscode.Position(0, expr.start),
+                new vscode.Position(0, expr.end)
               ),
             };
           }
@@ -244,6 +277,31 @@ export class LiquidParser {
         rootName,
         fullPath,
         propertyPath,
+      };
+    }
+
+    return null;
+  }
+
+  private parseTagInExpression(
+    content: string,
+    position: number
+  ): Omit<LiquidTag, "range"> | null {
+    // Parse tag name and parameters from tag content
+    const parts = content.trim().split(/\s+/);
+    if (parts.length === 0) return null;
+
+    const tagName = parts[0];
+    const parameters = parts.slice(1);
+
+    // Check if the cursor position is within the tag name
+    const tagStart = content.indexOf(tagName);
+    const tagEnd = tagStart + tagName.length;
+
+    if (position >= tagStart && position <= tagEnd) {
+      return {
+        name: tagName,
+        parameters,
       };
     }
 
