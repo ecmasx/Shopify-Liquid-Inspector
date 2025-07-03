@@ -34,18 +34,21 @@ The extension provides comprehensive support for all **132 official Shopify Liqu
 ### 📦 Core Commerce Objects
 
 **Products & Inventory**
+
 - `product` - Product information, variants, images, media
 - `variant` - Product variants with pricing and inventory
 - `collection` - Product collections and filtering
 - `all_products` - Global product access (limited to 20 handles)
 
 **Shopping & Checkout**
+
 - `cart` - Shopping cart with items and totals
 - `line_item` - Cart and order line items
 - `checkout` - Checkout process and payment
 - `order` - Order details and fulfillment
 
 **Customer Management**
+
 - `customer` - Customer profiles and preferences
 - `address` - Customer and shipping addresses
 - `customer_payment_method` - Saved payment methods
@@ -54,12 +57,14 @@ The extension provides comprehensive support for all **132 official Shopify Liqu
 ### 🏪 Store & Configuration
 
 **Store Information**
+
 - `shop` - Store settings, policies, and configuration
 - `brand` - Brand assets, colors, logos
 - `localization` - Multi-language and currency support
 - `market` - Regional market configuration
 
 **Navigation & Structure**
+
 - `linklists` / `linklist` / `link` - Navigation menus
 - `routes` - Standard store URLs
 - `request` - Current request information
@@ -68,12 +73,14 @@ The extension provides comprehensive support for all **132 official Shopify Liqu
 ### 📝 Content Management
 
 **Pages & Content**
+
 - `page` / `pages` - Store pages and content
 - `blog` / `blogs` / `article` / `articles` - Blog content
 - `comment` - Blog article comments
 - `search` / `predictive_search` - Search functionality
 
 **Media & Assets**
+
 - `image` / `images` - Image objects with focal points
 - `video` / `video_source` - Video content
 - `external_video` - YouTube/Vimeo videos
@@ -83,6 +90,7 @@ The extension provides comprehensive support for all **132 official Shopify Liqu
 ### 🎨 Theme & Design
 
 **Visual Elements**
+
 - `color` / `color_scheme` / `color_scheme_group` - Color management
 - `font` - Typography and font loading
 - `swatch` - Color and image swatches
@@ -90,6 +98,7 @@ The extension provides comprehensive support for all **132 official Shopify Liqu
 - `image_presentation` - Image display settings
 
 **Theme Structure**
+
 - `section` / `block` - Theme sections and blocks
 - `template` - Current template information
 - `settings` - Theme settings and configuration
@@ -98,17 +107,20 @@ The extension provides comprehensive support for all **132 official Shopify Liqu
 ### 💰 Commerce Features
 
 **Pricing & Discounts**
+
 - `money` - Money formatting and currency
 - `discount` / `discount_allocation` / `discount_application` - Discounts
 - `quantity_price_break` / `quantity_rule` - Bulk pricing
 - `tax_line` - Tax calculations
 
 **Subscriptions & Plans**
+
 - `selling_plan` / `selling_plan_group` - Subscription plans
 - `selling_plan_allocation` - Plan pricing
 - `selling_plan_option` - Plan customization
 
 **Fulfillment & Shipping**
+
 - `fulfillment` - Order fulfillment tracking
 - `shipping_method` - Shipping options
 - `transaction` / `transaction_payment_details` - Payments
@@ -117,16 +129,19 @@ The extension provides comprehensive support for all **132 official Shopify Liqu
 ### 🔧 Advanced Features
 
 **Filtering & Search**
+
 - `filter` / `filter_value` - Collection filtering
 - `sort_option` - Sorting options
 - `predictive_search_resources` - Search results
 
 **Forms & Interaction**
+
 - `form` / `form_errors` - Form handling
 - `paginate` / `part` - Pagination controls
 - `recommendations` - Product recommendations
 
 **Loop Controls**
+
 - `forloop` - For loop variables and state
 - `tablerowloop` - Table row iteration
 - `current_page` / `current_tags` - Context variables
@@ -134,11 +149,13 @@ The extension provides comprehensive support for all **132 official Shopify Liqu
 ### 📊 Data & Metadata
 
 **Custom Data**
+
 - `metafield` - Custom field data
 - `metaobject` / `metaobject_definition` / `metaobject_system` - Custom objects
 - `metaobjects` - Object collections
 
 **Measurements & Ratings**
+
 - `measurement` - Unit measurements
 - `unit_price_measurement` - Unit pricing
 - `rating` - Product ratings
@@ -147,11 +164,13 @@ The extension provides comprehensive support for all **132 official Shopify Liqu
 ### 🌐 Localization & SEO
 
 **Multi-region Support**
+
 - `country` / `currency` - Regional settings
 - `shop_locale` - Language configuration
 - `closest` - Context-aware resource selection
 
 **SEO & Technical**
+
 - `robots` / `group` / `rule` / `sitemap` / `user_agent` - SEO robots.txt
 - `handle` - Resource handles
 - `page_title` / `page_description` / `page_image` - Meta tags
@@ -159,15 +178,18 @@ The extension provides comprehensive support for all **132 official Shopify Liqu
 ### ⚙️ System & Integration
 
 **Gift Cards & Credits**
+
 - `gift_card` / `recipient` - Gift card functionality
 - `store_credit_account` - Store credit management
 
 **Technical Objects**
+
 - `content_for_header` / `content_for_layout` / `content_for_index` - Theme structure
 - `additional_checkout_buttons` / `content_for_additional_checkout_buttons` - Payment buttons
 - `powered_by_link` - Shopify branding
 
 **Deprecated Objects** ⚠️
+
 - `script` / `scripts` - Legacy Shopify Scripts (sunset August 2025)
 - `theme` - Theme information (values subject to change)
 - `discount` - Legacy discount object (use discount_application)
@@ -176,12 +198,14 @@ The extension provides comprehensive support for all **132 official Shopify Liqu
 ### 🌏 Country & Region
 
 **Geographic Data**
+
 - `all_country_option_tags` / `country_option_tags` - Country selectors
 - `pending_payment_instruction_input` - Offline payment instructions
 - `user` - Content author information
 - `policy` - Store policies
 
 **File Management**
+
 - `generic_file` - Non-media file uploads
 
 ## Usage
@@ -190,11 +214,14 @@ The extension provides comprehensive support for all **132 official Shopify Liqu
 
 1. **Open any Liquid template** (`.liquid` file)
 2. **Hover over objects** to see detailed information:
+
    ```liquid
    {{ product.title }}
    <!-- Hover over 'product' or 'title' for info -->
    ```
+
 3. **Get property suggestions** while typing:
+
    ```liquid
    {{ customer. }}
    <!-- See all available customer properties -->
@@ -203,18 +230,21 @@ The extension provides comprehensive support for all **132 official Shopify Liqu
 ### Advanced Features
 
 **Property Validation**
+
 ```liquid
 {{ product.invalid_property }}
 <!-- ⚠️ Warning: Property doesn't exist -->
 ```
 
 **Deprecated Object Detection**
+
 ```liquid
 {{ script.name }}
 <!-- ⚠️ Deprecated: Use Shopify Functions instead -->
 ```
 
 **Context-Aware Suggestions**
+
 ```liquid
 <!-- In product template, get product-specific suggestions -->
 {{ product.variants.first.price }}
@@ -248,52 +278,59 @@ Customize the extension through VS Code settings:
 | `liquidInspector.enablePropertyValidation` | Validate property existence | `true` |
 | `liquidInspector.highlightInvalidProperties` | Highlight invalid properties | `true` |
 
-## Installation
+## Works with Official Shopify Liquid Extension
 
-1. Open VS Code
-2. Go to Extensions (Ctrl+Shift+X)
-3. Search for "Shopify Liquid Inspector"
-4. Click Install
+This extension is designed to **complement** the official [Shopify Liquid](https://marketplace.visualstudio.com/items?itemName=Shopify.theme-check-vscode) extension:
 
-Or install from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=ecmasx.shopify-liquid-inspector).
+### 🤝 Perfect Integration
 
-## Requirements
+- **Enhanced IntelliSense**: Adds detailed hover information to Shopify Liquid's syntax highlighting
+- **Property Validation**: Works alongside Theme Check for comprehensive validation
+- **No Conflicts**: Both extensions work together seamlessly
+- **Complementary Features**:
+  - Official extension provides syntax highlighting and basic validation
+  - Liquid Inspector adds deep object inspection and property details
 
-- **VS Code** 1.74.0 or higher
-- **Liquid files** with `.liquid` extension
-- **Shopify theme development** (recommended)
+### 📋 Recommended Setup
+
+Install **both extensions** for the best Shopify development experience:
+
+1. **Shopify Liquid** (Official) - Syntax highlighting, snippets, Theme Check
+2. **Shopify Liquid Inspector** (This extension) - Object inspection, property validation
+
+### ⚡ Enhanced Workflow
+
+```liquid
+<!-- Official extension provides syntax highlighting -->
+{{ product.title }}
+     ↑
+<!-- Liquid Inspector provides detailed hover info -->
+```
+
+Both extensions complement each other to provide a complete Shopify Liquid development environment.
 
 ## Known Issues
 
 - Large objects may take a moment to load all properties
 - Some deprecated warnings may appear for legacy themes (this is intentional)
 
-## GitHub
+## Roadmap
 
-[https://github.com/ecmasx/Shopify-Liquid-Inspector](https://github.com/ecmasx/Shopify-Liquid-Inspector)
-
-## Support
-
-- 🐛 **Report bugs**: [GitHub Issues](https://github.com/ecmasx/Shopify-Liquid-Inspector/issues)
+- 🔄 **Autocomplete improvements** with fuzzy matching
+- 🎯 **Template-specific suggestions** (product vs collection templates)
+- 📚 **Inline documentation** with Shopify docs links
+- 🔍 **Go to definition** for custom objects
+- 🛠️ **Refactoring tools** for deprecated object migration
 
 ## License
 
 This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
 
-## Contributing
-
-Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md) for details on how to:
-
-- Report bugs and issues
-- Suggest new features
-- Submit pull requests
-- Improve documentation
-
 ## Acknowledgments
 
 - **Shopify** for the comprehensive Liquid documentation
 - **VS Code team** for the excellent extension API
-- **Community contributors** for feedback and improvements
+- **Official Shopify Liquid Extension** for providing the foundation
 
 ---
 
