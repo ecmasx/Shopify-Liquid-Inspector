@@ -2,6 +2,7 @@ export interface ShopifyObjectDefinition {
   type: string;
   description: string;
   properties: { [key: string]: any };
+  deprecated?: boolean;
 }
 
 export class ShopifyObjectRegistry {
@@ -21,306 +22,385 @@ export class ShopifyObjectRegistry {
 
   private initializeObjects() {
     this.objects = {
-      shop: {
-        type: "Shop",
-        description: "Represents the shop",
+      additional_checkout_buttons: {
+        type: "AdditionalCheckoutButtons",
+        description:
+          "Returns true if a store has any payment providers with offsite checkouts, such as PayPal Express Checkout.",
+        properties: {},
+      },
+
+      address: {
+        type: "Address",
+        description:
+          "An address, such as a customer address or order shipping address.",
         properties: {
-          id: { type: "number", description: "Shop ID" },
-          name: { type: "string", description: "Shop name" },
-          email: { type: "string", description: "Shop email" },
-          domain: { type: "string", description: "Shop domain" },
-          url: { type: "string", description: "Shop URL" },
-          currency: { type: "string", description: "Shop currency" },
-          money_format: { type: "string", description: "Money format" },
-          money_with_currency_format: {
+          address1: {
             type: "string",
-            description: "Money with currency format",
+            description: "First line of the address",
           },
-          description: { type: "string", description: "Shop description" },
-          created_at: { type: "date", description: "Shop creation date" },
-          updated_at: { type: "date", description: "Shop last update" },
-          address: { type: "address", description: "Shop address" },
-          phone: { type: "string", description: "Shop phone" },
-          customer_email: {
+          address2: {
             type: "string",
-            description: "Customer service email",
+            description: "Second line of the address",
           },
-          timezone: { type: "string", description: "Shop timezone" },
-          primary_locale: { type: "string", description: "Primary locale" },
-          enabled_currencies: {
-            type: "array<string>",
-            description: "Enabled currencies",
+          city: { type: "string", description: "City name" },
+          company: { type: "string", description: "Company name" },
+          country: { type: "country", description: "Country object" },
+          country_code: { type: "string", description: "Country code" },
+          first_name: { type: "string", description: "First name" },
+          id: { type: "number", description: "Unique identifier" },
+          last_name: { type: "string", description: "Last name" },
+          name: { type: "string", description: "Full name" },
+          phone: { type: "string", description: "Phone number" },
+          province: { type: "string", description: "Province/state name" },
+          province_code: { type: "string", description: "Province/state code" },
+          street: { type: "string", description: "Complete street address" },
+          summary: { type: "string", description: "Full formatted address" },
+          url: { type: "string", description: "URL to manage this address" },
+          zip: { type: "string", description: "Postal/ZIP code" },
+        },
+      },
+
+      all_country_option_tags: {
+        type: "AllCountryOptionTags",
+        description:
+          "Creates an <option> tag for each country with data-provinces attribute containing JSON-encoded array of subregions.",
+        properties: {},
+      },
+
+      all_products: {
+        type: "AllProducts",
+        description:
+          "All of the products on a store. Limited to 20 unique handles per page.",
+        properties: {},
+      },
+
+      app: {
+        type: "App",
+        description:
+          "An app object, usually used to access app-specific information for theme app extensions.",
+        properties: {
+          metafields: {
+            type: "metafields",
+            description: "The metafields owned by the app",
           },
         },
       },
 
-      product: {
-        type: "Product",
-        description: "Represents a product in your Shopify store",
+      article: {
+        type: "Article",
+        description: "An article or blog post in a blog.",
         properties: {
-          id: {
-            type: "number",
-            description: "The unique identifier for the product",
-          },
-          title: { type: "string", description: "The title of the product" },
-          handle: { type: "string", description: "The handle of the product" },
-          description: {
+          author: { type: "string", description: "Author name" },
+          comment_post_url: {
             type: "string",
-            description: "The description of the product",
+            description: "URL for posting comments",
           },
-          content: {
-            type: "string",
-            description: "The content of the product",
-          },
-          excerpt: {
-            type: "string",
-            description: "The excerpt of the product",
-          },
-          price: { type: "money", description: "The price of the product" },
-          price_min: { type: "money", description: "The lowest variant price" },
-          price_max: {
-            type: "money",
-            description: "The highest variant price",
-          },
-          available: {
+          comments: { type: "array<comment>", description: "Article comments" },
+          comments_count: { type: "number", description: "Number of comments" },
+          comments_enabled: {
             type: "boolean",
-            description: "Whether the product is available for purchase",
+            description: "Whether comments are enabled",
           },
-          compare_at_price: {
-            type: "money",
-            description: "The compare at price of the product",
+          content: { type: "string", description: "Full article content" },
+          created_at: { type: "string", description: "Creation timestamp" },
+          excerpt: { type: "string", description: "Article excerpt" },
+          excerpt_or_content: {
+            type: "string",
+            description: "Excerpt if available, otherwise content",
           },
-          compare_at_price_min: {
-            type: "money",
-            description: "The lowest variant compare at price",
+          handle: { type: "string", description: "URL handle" },
+          id: { type: "string", description: "Unique identifier" },
+          image: { type: "image", description: "Featured image" },
+          metafields: {
+            type: "metafields",
+            description: "Associated metafields",
           },
-          compare_at_price_max: {
-            type: "money",
-            description: "The highest variant compare at price",
-          },
-          variants: {
-            type: "array<variant>",
-            description: "Array of product variants",
-          },
-          images: {
-            type: "array<image>",
-            description: "Array of product images",
-          },
-          featured_image: {
-            type: "image",
-            description: "The featured image of the product",
-          },
-          options: {
-            type: "array<option>",
-            description: "Array of product options",
-          },
-          tags: { type: "array<string>", description: "Array of product tags" },
-          type: { type: "string", description: "The product type" },
-          vendor: { type: "string", description: "The vendor of the product" },
-          created_at: {
-            type: "date",
-            description: "The date the product was created",
+          moderated: {
+            type: "boolean",
+            description: "Whether comments are moderated",
           },
           published_at: {
-            type: "date",
-            description: "The date the product was published",
-          },
-          updated_at: {
-            type: "date",
-            description: "The date the product was updated",
-          },
-          url: {
             type: "string",
-            description: "The relative URL of the product",
+            description: "Publication timestamp",
           },
-          first_available_variant: {
-            type: "variant",
-            description: "The first available variant",
-          },
-          selected_variant: {
-            type: "variant",
-            description: "The currently selected variant",
-          },
-          selected_or_first_available_variant: {
-            type: "variant",
-            description: "Selected or first available variant",
-          },
-          has_only_default_variant: {
-            type: "boolean",
-            description: "Whether product has only default variant",
-          },
-          metafields: {
-            type: "array<metafield>",
-            description: "Product metafields",
-          },
+          tags: { type: "array<string>", description: "Article tags" },
+          template_suffix: { type: "string", description: "Template suffix" },
+          title: { type: "string", description: "Article title" },
+          updated_at: { type: "string", description: "Last update timestamp" },
+          url: { type: "string", description: "Article URL" },
+          user: { type: "user", description: "Author user object" },
         },
       },
 
-      variant: {
-        type: "Variant",
-        description: "Represents a product variant",
+      articles: {
+        type: "Articles",
+        description: "All articles across all blogs in the store.",
+        properties: {},
+      },
+
+      block: {
+        type: "Block",
+        description: "Content and settings of a section block.",
         properties: {
-          id: { type: "number", description: "Variant ID" },
-          title: { type: "string", description: "Variant title" },
-          price: { type: "money", description: "Variant price" },
-          compare_at_price: { type: "money", description: "Compare at price" },
-          available: {
-            type: "boolean",
-            description: "Whether variant is available",
-          },
-          inventory_quantity: {
-            type: "number",
-            description: "Inventory quantity",
-          },
-          inventory_management: {
+          id: { type: "string", description: "Block identifier" },
+          settings: { type: "object", description: "Block settings" },
+          shopify_attributes: {
             type: "string",
-            description: "Inventory management",
+            description: "Shopify editor attributes",
           },
-          inventory_policy: { type: "string", description: "Inventory policy" },
-          weight: { type: "number", description: "Variant weight" },
-          weight_unit: { type: "string", description: "Weight unit" },
-          option1: { type: "string", description: "First option value" },
-          option2: { type: "string", description: "Second option value" },
-          option3: { type: "string", description: "Third option value" },
-          sku: { type: "string", description: "SKU" },
-          barcode: { type: "string", description: "Barcode" },
-          image: { type: "image", description: "Variant image" },
-          featured_image: {
-            type: "image",
-            description: "Variant featured image",
+          type: { type: "string", description: "Block type" },
+        },
+      },
+
+      blog: {
+        type: "Blog",
+        description: "Information about a specific blog in the store.",
+        properties: {
+          all_tags: {
+            type: "array<string>",
+            description: "All tags used in blog",
           },
-          url: { type: "string", description: "Variant URL" },
-          requires_shipping: {
+          articles: { type: "array<article>", description: "Blog articles" },
+          articles_count: {
+            type: "number",
+            description: "Total number of articles",
+          },
+          comments_enabled: {
             type: "boolean",
-            description: "Whether variant requires shipping",
+            description: "Whether comments are enabled",
           },
-          taxable: {
-            type: "boolean",
-            description: "Whether variant is taxable",
-          },
-          tax_code: { type: "string", description: "Tax code" },
-          unit_price: { type: "money", description: "Unit price" },
-          unit_price_measurement: {
-            type: "object",
-            description: "Unit price measurement",
-          },
+          handle: { type: "string", description: "Blog handle" },
+          id: { type: "number", description: "Unique identifier" },
           metafields: {
             type: "array<metafield>",
-            description: "Variant metafields",
+            description: "Associated metafields",
           },
+          moderated: {
+            type: "boolean",
+            description: "Whether comments are moderated",
+          },
+          next_article: { type: "article", description: "Next article" },
+          previous_article: {
+            type: "article",
+            description: "Previous article",
+          },
+          tags: {
+            type: "array<string>",
+            description: "Currently filtered tags",
+          },
+          template_suffix: { type: "string", description: "Template suffix" },
+          title: { type: "string", description: "Blog title" },
+          url: { type: "string", description: "Blog URL" },
         },
+      },
+
+      blogs: {
+        type: "Blogs",
+        description: "All blogs in the store.",
+        properties: {},
+      },
+
+      brand: {
+        type: "Brand",
+        description: "Brand assets for the store.",
+        properties: {
+          colors: { type: "brand_color", description: "Brand colors" },
+          cover_image: { type: "image", description: "Cover image" },
+          favicon_url: { type: "image", description: "Favicon URL" },
+          logo: { type: "image", description: "Brand logo" },
+          metafields: {
+            type: "metafields",
+            description: "Associated metafields",
+          },
+          short_description: {
+            type: "string",
+            description: "Brand description",
+          },
+          slogan: { type: "string", description: "Brand slogan" },
+          square_logo: { type: "image", description: "Square logo" },
+        },
+      },
+
+      brand_color: {
+        type: "BrandColor",
+        description: "Colors defined as part of store's brand assets.",
+        properties: {
+          alpha: { type: "number", description: "Alpha transparency" },
+          blue: { type: "number", description: "Blue value" },
+          chroma: { type: "number", description: "Chroma value" },
+          color_space: { type: "string", description: "Color space" },
+          green: { type: "number", description: "Green value" },
+          hue: { type: "number", description: "Hue value" },
+          lightness: { type: "number", description: "Lightness value" },
+          oklch: { type: "string", description: "OKLCH color string" },
+          oklcha: { type: "string", description: "OKLCHA color string" },
+          red: { type: "number", description: "Red value" },
+          rgb: { type: "string", description: "RGB color string" },
+          rgba: { type: "string", description: "RGBA color string" },
+          saturation: { type: "number", description: "Saturation value" },
+        },
+      },
+
+      canonical_url: {
+        type: "CanonicalUrl",
+        description: "The canonical URL for the current page.",
+        properties: {},
       },
 
       cart: {
         type: "Cart",
-        description: "Represents the customer's cart",
+        description: "A customer's cart.",
         properties: {
-          id: { type: "string", description: "The cart ID" },
-          item_count: {
-            type: "number",
-            description: "Number of items in cart",
-          },
-          item_count_is_singular: {
-            type: "boolean",
-            description: "Whether cart has exactly one item",
-          },
-          items: { type: "array<item>", description: "Array of cart items" },
-          total_price: { type: "money", description: "Total price of cart" },
-          total_weight: { type: "number", description: "Total weight of cart" },
-          currency: { type: "string", description: "Cart currency" },
           attributes: { type: "object", description: "Cart attributes" },
-          note: { type: "string", description: "Cart note" },
+          cart_level_discount_applications: {
+            type: "array<discount_application>",
+            description: "Cart-level discounts",
+          },
+          checkout_charge_amount: {
+            type: "number",
+            description: "Checkout charge amount",
+          },
+          currency: { type: "currency", description: "Cart currency" },
+          discount_applications: {
+            type: "array<discount_application>",
+            description: "All discount applications",
+          },
+          duties_included: {
+            type: "boolean",
+            description: "Whether duties are included",
+          },
           empty: { type: "boolean", description: "Whether cart is empty" },
+          item_count: { type: "number", description: "Number of items" },
+          items: { type: "array<line_item>", description: "Cart items" },
+          items_subtotal_price: {
+            type: "number",
+            description: "Subtotal price",
+          },
+          note: { type: "string", description: "Cart note" },
+          original_total_price: {
+            type: "number",
+            description: "Original total before discounts",
+          },
           requires_shipping: {
             type: "boolean",
-            description: "Whether cart requires shipping",
+            description: "Whether shipping is required",
           },
           taxes_included: {
             type: "boolean",
             description: "Whether taxes are included",
           },
           total_discount: {
-            type: "money",
+            type: "number",
             description: "Total discount amount",
+          },
+          total_price: { type: "number", description: "Total price" },
+          total_weight: { type: "number", description: "Total weight" },
+        },
+      },
+
+      checkout: {
+        type: "Checkout",
+        description: "A customer's checkout. (Deprecated for most pages)",
+        properties: {
+          applied_gift_cards: {
+            type: "array<gift_card>",
+            description: "Applied gift cards",
+          },
+          attributes: { type: "object", description: "Checkout attributes" },
+          billing_address: { type: "address", description: "Billing address" },
+          buyer_accepts_marketing: {
+            type: "boolean",
+            description: "Marketing acceptance",
+          },
+          cart_level_discount_applications: {
+            type: "array<discount_application>",
+            description: "Cart-level discounts",
+          },
+          currency: { type: "string", description: "Checkout currency" },
+          customer: { type: "customer", description: "Customer information" },
+          discount_applications: {
+            type: "array<discount_application>",
+            description: "All discounts",
+          },
+          discounts_amount: {
+            type: "array<discount_application>",
+            description: "Discount amounts",
+          },
+          discounts_savings: {
+            type: "array<discount_application>",
+            description: "Discount savings",
+          },
+          email: { type: "string", description: "Customer email" },
+          gift_cards_amount: {
+            type: "number",
+            description: "Gift card amount applied",
+          },
+          id: { type: "number", description: "Checkout ID" },
+          item_count: { type: "number", description: "Number of items" },
+          line_items: {
+            type: "array<line_item>",
+            description: "Checkout items",
+          },
+          line_items_subtotal_price: {
+            type: "number",
+            description: "Items subtotal",
+          },
+          name: { type: "number", description: "Checkout name" },
+          note: { type: "string", description: "Checkout note" },
+          order: { type: "order", description: "Associated order" },
+          order_id: { type: "string", description: "Order ID" },
+          order_name: { type: "string", description: "Order name" },
+          order_number: { type: "string", description: "Order number" },
+          requires_shipping: {
+            type: "boolean",
+            description: "Requires shipping",
+          },
+          shipping_address: {
+            type: "address",
+            description: "Shipping address",
+          },
+          shipping_method: {
+            type: "shipping_method",
+            description: "Shipping method",
+          },
+          shipping_price: { type: "number", description: "Shipping cost" },
+          tax_lines: {
+            type: "array<tax_line>",
+            description: "Tax information",
+          },
+          tax_price: { type: "number", description: "Tax amount" },
+          total_price: { type: "number", description: "Total price" },
+          transactions: {
+            type: "array<transaction>",
+            description: "Payment transactions",
           },
         },
       },
 
-      customer: {
-        type: "Customer",
-        description: "Represents a customer",
+      closest: {
+        type: "Closest",
+        description: "Resources of different types closest to current context.",
         properties: {
-          id: { type: "number", description: "Customer ID" },
-          email: { type: "string", description: "Customer email" },
-          first_name: { type: "string", description: "Customer first name" },
-          last_name: { type: "string", description: "Customer last name" },
-          name: { type: "string", description: "Customer full name" },
-          phone: { type: "string", description: "Customer phone" },
-          accepts_marketing: {
-            type: "boolean",
-            description: "Whether customer accepts marketing",
-          },
-          addresses: {
-            type: "array<address>",
-            description: "Customer addresses",
-          },
-          default_address: {
-            type: "address",
-            description: "Default customer address",
-          },
-          orders: { type: "array<order>", description: "Customer orders" },
-          orders_count: {
-            type: "number",
-            description: "Number of customer orders",
-          },
-          total_spent: {
-            type: "money",
-            description: "Total amount spent by customer",
-          },
-          tags: { type: "array<string>", description: "Customer tags" },
-          has_account: {
-            type: "boolean",
-            description: "Whether customer has an account",
-          },
-          created_at: { type: "date", description: "Customer creation date" },
-          updated_at: { type: "date", description: "Customer last update" },
-          last_order: { type: "order", description: "Customer's last order" },
-          metafields: {
-            type: "array<metafield>",
-            description: "Customer metafields",
-          },
+          article: { type: "article", description: "Closest article" },
+          blog: { type: "blog", description: "Closest blog" },
+          collection: { type: "collection", description: "Closest collection" },
+          metaobject: { type: "metaobject", description: "Closest metaobject" },
+          page: { type: "page", description: "Closest page" },
+          product: { type: "product", description: "Closest product" },
         },
       },
 
       collection: {
         type: "Collection",
-        description: "Represents a collection of products",
+        description: "A collection in a store.",
         properties: {
-          id: { type: "number", description: "Collection ID" },
-          title: { type: "string", description: "Collection title" },
-          handle: { type: "string", description: "Collection handle" },
-          description: {
-            type: "string",
-            description: "Collection description",
-          },
-          products: {
-            type: "array<product>",
-            description: "Products in collection",
-          },
-          products_count: {
-            type: "number",
-            description: "Number of products in collection",
-          },
-          url: { type: "string", description: "Collection URL" },
-          image: { type: "image", description: "Collection image" },
-          featured_image: { type: "image", description: "Featured image" },
           all_products_count: {
             type: "number",
             description: "Total products in collection",
           },
           all_tags: {
             type: "array<string>",
-            description: "All tags in collection",
+            description: "All product tags in collection",
           },
           all_types: {
             type: "array<string>",
@@ -330,1145 +410,101 @@ export class ShopifyObjectRegistry {
             type: "array<string>",
             description: "All vendors in collection",
           },
-          sort_by: { type: "string", description: "Sort order" },
+          current_type: {
+            type: "string",
+            description: "Currently filtered type",
+          },
+          current_vendor: {
+            type: "string",
+            description: "Currently filtered vendor",
+          },
           default_sort_by: {
             type: "string",
             description: "Default sort order",
           },
-          template_suffix: { type: "string", description: "Template suffix" },
-          published_at: { type: "date", description: "Publication date" },
-          created_at: { type: "date", description: "Creation date" },
-          updated_at: { type: "date", description: "Last update date" },
+          description: {
+            type: "string",
+            description: "Collection description",
+          },
+          featured_image: { type: "image", description: "Featured image" },
+          filters: { type: "array<filter>", description: "Available filters" },
+          handle: { type: "string", description: "Collection handle" },
+          id: { type: "number", description: "Unique identifier" },
+          image: { type: "image", description: "Collection image" },
           metafields: {
             type: "array<metafield>",
-            description: "Collection metafields",
+            description: "Associated metafields",
           },
-        },
-      },
-
-      image: {
-        type: "Image",
-        description: "Represents an image",
-        properties: {
-          id: { type: "number", description: "Image ID" },
-          alt: { type: "string", description: "Alt text" },
-          src: { type: "string", description: "Image URL" },
-          url: { type: "string", description: "Image URL" },
-          width: { type: "number", description: "Image width" },
-          height: { type: "number", description: "Image height" },
-          aspect_ratio: { type: "number", description: "Image aspect ratio" },
-          created_at: { type: "date", description: "Creation date" },
-          updated_at: { type: "date", description: "Update date" },
-          position: { type: "number", description: "Image position" },
-          product_id: { type: "number", description: "Associated product ID" },
-          variant_ids: {
-            type: "array<number>",
-            description: "Associated variant IDs",
+          next_product: {
+            type: "product",
+            description: "Next product in collection",
           },
-        },
-      },
-
-      address: {
-        type: "Address",
-        description: "Represents an address",
-        properties: {
-          id: { type: "number", description: "Address ID" },
-          first_name: { type: "string", description: "First name" },
-          last_name: { type: "string", description: "Last name" },
-          name: { type: "string", description: "Full name" },
-          company: { type: "string", description: "Company" },
-          address1: { type: "string", description: "Address line 1" },
-          address2: { type: "string", description: "Address line 2" },
-          street: { type: "string", description: "Street address" },
-          city: { type: "string", description: "City" },
-          province: { type: "string", description: "Province/State" },
-          province_code: { type: "string", description: "Province/State code" },
-          country: { type: "string", description: "Country" },
-          country_code: { type: "string", description: "Country code" },
-          zip: { type: "string", description: "ZIP/Postal code" },
-          phone: { type: "string", description: "Phone number" },
-          default: {
-            type: "boolean",
-            description: "Whether this is the default address",
+          previous_product: {
+            type: "product",
+            description: "Previous product in collection",
           },
-        },
-      },
-
-      order: {
-        type: "Order",
-        description: "Represents an order",
-        properties: {
-          id: { type: "number", description: "Order ID" },
-          name: { type: "string", description: "Order name" },
-          order_number: { type: "number", description: "Order number" },
-          order_status_url: { type: "string", description: "Order status URL" },
-          email: { type: "string", description: "Customer email" },
-          phone: { type: "string", description: "Customer phone" },
-          created_at: { type: "date", description: "Order creation date" },
-          updated_at: { type: "date", description: "Order update date" },
-          cancelled_at: {
-            type: "date",
-            description: "Order cancellation date",
+          products: {
+            type: "array<product>",
+            description: "Products in collection",
           },
-          cancel_reason: { type: "string", description: "Cancellation reason" },
-          total_price: { type: "money", description: "Total order price" },
-          subtotal_price: { type: "money", description: "Subtotal price" },
-          total_discounts: { type: "money", description: "Total discounts" },
-          total_tax: { type: "money", description: "Total tax" },
-          tax_lines: { type: "array<tax_line>", description: "Tax lines" },
-          line_items: {
-            type: "array<line_item>",
-            description: "Order line items",
-          },
-          line_items_subtotal_price: {
-            type: "money",
-            description: "Line items subtotal",
-          },
-          customer: { type: "customer", description: "Order customer" },
-          billing_address: { type: "address", description: "Billing address" },
-          shipping_address: {
-            type: "address",
-            description: "Shipping address",
-          },
-          fulfillments: {
-            type: "array<fulfillment>",
-            description: "Order fulfillments",
-          },
-          shipping_methods: {
-            type: "array<shipping_method>",
-            description: "Shipping methods",
-          },
-          financial_status: { type: "string", description: "Financial status" },
-          fulfillment_status: {
-            type: "string",
-            description: "Fulfillment status",
-          },
-          currency: { type: "string", description: "Order currency" },
-          tags: { type: "array<string>", description: "Order tags" },
-          note: { type: "string", description: "Order note" },
-          attributes: { type: "object", description: "Order attributes" },
-          discount_applications: {
-            type: "array<discount>",
-            description: "Applied discounts",
-          },
-          transactions: {
-            type: "array<transaction>",
-            description: "Order transactions",
-          },
-        },
-      },
-
-      item: {
-        type: "Item",
-        description: "Represents a cart item",
-        properties: {
-          id: { type: "number", description: "Line item ID" },
-          key: { type: "string", description: "Line item key" },
-          variant_id: { type: "number", description: "Variant ID" },
-          product_id: { type: "number", description: "Product ID" },
-          title: { type: "string", description: "Item title" },
-          price: { type: "money", description: "Item price" },
-          line_price: { type: "money", description: "Line price" },
-          final_price: {
-            type: "money",
-            description: "Final price after discounts",
-          },
-          final_line_price: {
-            type: "money",
-            description: "Final line price after discounts",
-          },
-          quantity: { type: "number", description: "Item quantity" },
-          sku: { type: "string", description: "SKU" },
-          grams: { type: "number", description: "Weight in grams" },
-          vendor: { type: "string", description: "Vendor" },
-          product_title: { type: "string", description: "Product title" },
-          variant_title: { type: "string", description: "Variant title" },
-          url: { type: "string", description: "Item URL" },
-          image: { type: "image", description: "Item image" },
-          handle: { type: "string", description: "Product handle" },
-          requires_shipping: {
-            type: "boolean",
-            description: "Whether item requires shipping",
-          },
-          product_type: { type: "string", description: "Product type" },
-          properties: { type: "object", description: "Line item properties" },
-          gift_card: {
-            type: "boolean",
-            description: "Whether item is a gift card",
-          },
-          discounts: {
-            type: "array<discount>",
-            description: "Applied discounts",
-          },
-          unit_price: { type: "money", description: "Unit price" },
-          unit_price_measurement: {
-            type: "object",
-            description: "Unit price measurement",
-          },
-        },
-      },
-
-      line_item: {
-        type: "LineItem",
-        description: "Represents an order line item",
-        properties: {
-          id: { type: "number", description: "Line item ID" },
-          variant_id: { type: "number", description: "Variant ID" },
-          product_id: { type: "number", description: "Product ID" },
-          title: { type: "string", description: "Line item title" },
-          price: { type: "money", description: "Line item price" },
-          line_price: { type: "money", description: "Total line price" },
-          final_price: {
-            type: "money",
-            description: "Final price after discounts",
-          },
-          final_line_price: {
-            type: "money",
-            description: "Final line price after discounts",
-          },
-          quantity: { type: "number", description: "Quantity" },
-          sku: { type: "string", description: "SKU" },
-          grams: { type: "number", description: "Weight in grams" },
-          vendor: { type: "string", description: "Vendor" },
-          product_title: { type: "string", description: "Product title" },
-          variant_title: { type: "string", description: "Variant title" },
-          fulfillment_service: {
-            type: "string",
-            description: "Fulfillment service",
-          },
-          requires_shipping: {
-            type: "boolean",
-            description: "Whether line item requires shipping",
-          },
-          taxable: {
-            type: "boolean",
-            description: "Whether line item is taxable",
-          },
-          gift_card: {
-            type: "boolean",
-            description: "Whether line item is a gift card",
-          },
-          variant: { type: "variant", description: "Associated variant" },
-          product: { type: "product", description: "Associated product" },
-          image: { type: "image", description: "Line item image" },
-          url: { type: "string", description: "Product URL" },
-          properties: { type: "object", description: "Line item properties" },
-          successfully_fulfilled_quantity: {
+          products_count: {
             type: "number",
-            description: "Successfully fulfilled quantity",
+            description: "Number of products shown",
           },
-          fulfillment_quantity: {
-            type: "number",
-            description: "Fulfillment quantity",
-          },
-          unit_price: { type: "money", description: "Unit price" },
-          unit_price_measurement: {
-            type: "object",
-            description: "Unit price measurement",
-          },
-          tax_lines: { type: "array<tax_line>", description: "Tax lines" },
-          discount_allocations: {
-            type: "array<discount>",
-            description: "Discount allocations",
-          },
-        },
-      },
-
-      option: {
-        type: "Option",
-        description: "Represents a product option",
-        properties: {
-          name: { type: "string", description: "Option name" },
-          position: { type: "number", description: "Option position" },
-          values: { type: "array<string>", description: "Option values" },
-          selected_value: {
+          published_at: {
             type: "string",
-            description: "Currently selected value",
+            description: "Publication timestamp",
           },
-        },
-      },
-
-      page: {
-        type: "Page",
-        description: "Represents a page",
-        properties: {
-          id: { type: "number", description: "Page ID" },
-          title: { type: "string", description: "Page title" },
-          content: { type: "string", description: "Page content" },
-          summary: { type: "string", description: "Page summary" },
-          excerpt: { type: "string", description: "Page excerpt" },
-          handle: { type: "string", description: "Page handle" },
-          url: { type: "string", description: "Page URL" },
-          created_at: { type: "date", description: "Creation date" },
-          updated_at: { type: "date", description: "Update date" },
-          published_at: { type: "date", description: "Publication date" },
-          template_suffix: { type: "string", description: "Template suffix" },
-          metafields: {
-            type: "array<metafield>",
-            description: "Page metafields",
+          sort_by: { type: "string", description: "Current sort order" },
+          sort_options: {
+            type: "array<sort_option>",
+            description: "Available sort options",
           },
-        },
-      },
-
-      blog: {
-        type: "Blog",
-        description: "Represents a blog",
-        properties: {
-          id: { type: "number", description: "Blog ID" },
-          title: { type: "string", description: "Blog title" },
-          handle: { type: "string", description: "Blog handle" },
-          url: { type: "string", description: "Blog URL" },
-          articles: { type: "array<article>", description: "Blog articles" },
-          moderated: {
-            type: "boolean",
-            description: "Whether comments are moderated",
-          },
-          commentable: { type: "string", description: "Comment settings" },
-          feedburner: { type: "string", description: "Feedburner URL" },
-          feedburner_location: {
-            type: "string",
-            description: "Feedburner location",
-          },
-          created_at: { type: "date", description: "Creation date" },
-          updated_at: { type: "date", description: "Update date" },
-          tags: { type: "array<string>", description: "All tags in blog" },
-          summary: { type: "string", description: "Blog summary" },
-          template_suffix: { type: "string", description: "Template suffix" },
-          metafields: {
-            type: "array<metafield>",
-            description: "Blog metafields",
-          },
-        },
-      },
-
-      article: {
-        type: "Article",
-        description: "Represents a blog article",
-        properties: {
-          id: { type: "number", description: "Article ID" },
-          title: { type: "string", description: "Article title" },
-          content: { type: "string", description: "Article content" },
-          excerpt: { type: "string", description: "Article excerpt" },
-          summary: { type: "string", description: "Article summary" },
-          handle: { type: "string", description: "Article handle" },
-          url: { type: "string", description: "Article URL" },
-          created_at: { type: "date", description: "Creation date" },
-          updated_at: { type: "date", description: "Update date" },
-          published_at: { type: "date", description: "Publication date" },
-          author: { type: "string", description: "Author" },
-          user: { type: "user", description: "User who created the article" },
-          tags: { type: "array<string>", description: "Article tags" },
-          image: { type: "image", description: "Article image" },
-          comment_post_url: { type: "string", description: "Comment post URL" },
-          comments: { type: "array<comment>", description: "Article comments" },
-          comments_count: { type: "number", description: "Number of comments" },
-          comments_enabled: {
-            type: "boolean",
-            description: "Whether comments are enabled",
-          },
-          moderated: {
-            type: "boolean",
-            description: "Whether comments are moderated",
-          },
-          template_suffix: { type: "string", description: "Template suffix" },
-          metafields: {
-            type: "array<metafield>",
-            description: "Article metafields",
-          },
-        },
-      },
-
-      search: {
-        type: "Search",
-        description: "Search results",
-        properties: {
-          performed: {
-            type: "boolean",
-            description: "Whether search was performed",
-          },
-          results: { type: "array<product>", description: "Search results" },
-          results_count: { type: "number", description: "Number of results" },
-          terms: { type: "string", description: "Search terms" },
-          types: { type: "array<string>", description: "Result types" },
-          url: { type: "string", description: "Search URL" },
-        },
-      },
-
-      request: {
-        type: "Request",
-        description: "Current request information",
-        properties: {
-          host: { type: "string", description: "Request host" },
-          origin: { type: "string", description: "Request origin" },
-          path: { type: "string", description: "Request path" },
-          page_type: { type: "string", description: "Page type" },
-          locale: { type: "object", description: "Current locale" },
-          design_mode: {
-            type: "boolean",
-            description: "Whether in design mode",
-          },
-        },
-      },
-
-      settings: {
-        type: "Settings",
-        description: "Theme settings",
-        properties: {},
-      },
-
-      routes: {
-        type: "Routes",
-        description: "Store routes",
-        properties: {
-          root_url: { type: "string", description: "Root URL" },
-          account_addresses_url: {
-            type: "string",
-            description: "Account addresses URL",
-          },
-          account_login_url: {
-            type: "string",
-            description: "Account login URL",
-          },
-          account_logout_url: {
-            type: "string",
-            description: "Account logout URL",
-          },
-          account_recover_url: {
-            type: "string",
-            description: "Account recovery URL",
-          },
-          account_register_url: {
-            type: "string",
-            description: "Account registration URL",
-          },
-          account_url: { type: "string", description: "Account URL" },
-          cart_add_url: { type: "string", description: "Cart add URL" },
-          cart_change_url: { type: "string", description: "Cart change URL" },
-          cart_clear_url: { type: "string", description: "Cart clear URL" },
-          cart_update_url: { type: "string", description: "Cart update URL" },
-          cart_url: { type: "string", description: "Cart URL" },
-          collections_url: { type: "string", description: "Collections URL" },
-          search_url: { type: "string", description: "Search URL" },
-        },
-      },
-
-      metafield: {
-        type: "Metafield",
-        description: "Represents a metafield",
-        properties: {
-          id: { type: "number", description: "Metafield ID" },
-          namespace: { type: "string", description: "Metafield namespace" },
-          key: { type: "string", description: "Metafield key" },
-          value: { type: "string", description: "Metafield value" },
-          type: { type: "string", description: "Metafield type" },
-          description: { type: "string", description: "Metafield description" },
-          created_at: { type: "date", description: "Creation date" },
-          updated_at: { type: "date", description: "Update date" },
-        },
-      },
-
-      localization: {
-        type: "Localization",
-        description: "Localization information",
-        properties: {
-          language: { type: "language", description: "Current language" },
-          country: { type: "country", description: "Current country" },
-          market: { type: "market", description: "Current market" },
-          available_languages: {
-            type: "array<language>",
-            description: "Available languages",
-          },
-          available_countries: {
-            type: "array<country>",
-            description: "Available countries",
-          },
-        },
-      },
-
-      language: {
-        type: "Language",
-        description: "Represents a language",
-        properties: {
-          iso_code: { type: "string", description: "ISO language code" },
-          name: { type: "string", description: "Language name" },
-          root_url: {
-            type: "string",
-            description: "Root URL for this language",
-          },
-        },
-      },
-
-      country: {
-        type: "Country",
-        description: "Represents a country",
-        properties: {
-          iso_code: { type: "string", description: "ISO country code" },
-          name: { type: "string", description: "Country name" },
-          currency: { type: "currency", description: "Country currency" },
-          unit_system: { type: "string", description: "Unit system" },
-        },
-      },
-
-      currency: {
-        type: "Currency",
-        description: "Represents a currency",
-        properties: {
-          iso_code: { type: "string", description: "ISO currency code" },
-          name: { type: "string", description: "Currency name" },
-          symbol: { type: "string", description: "Currency symbol" },
-        },
-      },
-
-      form: {
-        type: "Form",
-        description: "Represents a form",
-        properties: {
-          errors: { type: "object", description: "Form errors" },
-          author: { type: "string", description: "Form author" },
-          body: { type: "string", description: "Form body" },
-          email: { type: "string", description: "Form email" },
-          id: { type: "string", description: "Form ID" },
-          posted_successfully: {
-            type: "boolean",
-            description: "Whether form was posted successfully",
-          },
-        },
-      },
-
-      forloop: {
-        type: "ForLoop",
-        description: "For loop object",
-        properties: {
-          first: { type: "boolean", description: "Whether first iteration" },
-          index: { type: "number", description: "Current index" },
-          index0: { type: "number", description: "Current index (0-indexed)" },
-          last: { type: "boolean", description: "Whether last iteration" },
-          length: { type: "number", description: "Total number of iterations" },
-          rindex: { type: "number", description: "Reverse index" },
-          rindex0: { type: "number", description: "Reverse index (0-indexed)" },
-        },
-      },
-
-      tablerow: {
-        type: "TableRow",
-        description: "Table row in forloop",
-        properties: {
-          col: { type: "number", description: "Current column" },
-          col0: { type: "number", description: "Current column (0-indexed)" },
-          col_first: { type: "boolean", description: "Whether first column" },
-          col_last: { type: "boolean", description: "Whether last column" },
-          first: { type: "boolean", description: "Whether first row" },
-          index: { type: "number", description: "Current index" },
-          index0: { type: "number", description: "Current index (0-indexed)" },
-          last: { type: "boolean", description: "Whether last row" },
-          length: { type: "number", description: "Total number of rows" },
-          rindex: { type: "number", description: "Reverse index" },
-          rindex0: { type: "number", description: "Reverse index (0-indexed)" },
-        },
-      },
-
-      discount: {
-        type: "Discount",
-        description: "Represents a discount",
-        properties: {
-          id: { type: "string", description: "Discount ID" },
-          code: { type: "string", description: "Discount code" },
-          type: { type: "string", description: "Discount type" },
-          amount: { type: "money", description: "Discount amount" },
-          title: { type: "string", description: "Discount title" },
-          savings: { type: "money", description: "Discount savings" },
-        },
-      },
-
-      gift_card: {
-        type: "GiftCard",
-        description: "Represents a gift card",
-        properties: {
-          id: { type: "number", description: "Gift card ID" },
-          balance: { type: "money", description: "Gift card balance" },
-          amount_used: { type: "money", description: "Amount used" },
-          last_characters: {
-            type: "string",
-            description: "Last characters of code",
-          },
-          code: { type: "string", description: "Gift card code" },
-          expired: {
-            type: "boolean",
-            description: "Whether gift card is expired",
-          },
-          enabled: {
-            type: "boolean",
-            description: "Whether gift card is enabled",
-          },
-        },
-      },
-
-      fulfillment: {
-        type: "Fulfillment",
-        description: "Represents a fulfillment",
-        properties: {
-          id: { type: "number", description: "Fulfillment ID" },
-          status: { type: "string", description: "Fulfillment status" },
-          created_at: { type: "date", description: "Creation date" },
-          updated_at: { type: "date", description: "Update date" },
-          tracking_company: { type: "string", description: "Tracking company" },
-          tracking_number: { type: "string", description: "Tracking number" },
-          tracking_url: { type: "string", description: "Tracking URL" },
-          tracking_numbers: {
+          tags: {
             type: "array<string>",
-            description: "Tracking numbers",
+            description: "Currently filtered tags",
           },
-          tracking_urls: {
-            type: "array<string>",
-            description: "Tracking URLs",
-          },
-          item_count: { type: "number", description: "Number of items" },
-        },
-      },
-
-      transaction: {
-        type: "Transaction",
-        description: "Represents a transaction",
-        properties: {
-          id: { type: "number", description: "Transaction ID" },
-          amount: { type: "money", description: "Transaction amount" },
-          kind: { type: "string", description: "Transaction kind" },
-          gateway: { type: "string", description: "Payment gateway" },
-          status: { type: "string", description: "Transaction status" },
-          message: { type: "string", description: "Transaction message" },
-          created_at: { type: "date", description: "Creation date" },
-          receipt: { type: "object", description: "Transaction receipt" },
-          currency_exchange: {
-            type: "object",
-            description: "Currency exchange info",
-          },
-        },
-      },
-
-      shipping_method: {
-        type: "ShippingMethod",
-        description: "Represents a shipping method",
-        properties: {
-          title: { type: "string", description: "Shipping method title" },
-          price: { type: "money", description: "Shipping price" },
-          handle: { type: "string", description: "Shipping method handle" },
-          id: { type: "string", description: "Shipping method ID" },
-        },
-      },
-
-      tax_line: {
-        type: "TaxLine",
-        description: "Represents a tax line",
-        properties: {
-          title: { type: "string", description: "Tax title" },
-          price: { type: "money", description: "Tax amount" },
-          rate: { type: "number", description: "Tax rate" },
-          rate_percentage: {
-            type: "number",
-            description: "Tax rate percentage",
-          },
-        },
-      },
-
-      comment: {
-        type: "Comment",
-        description: "Represents a blog comment",
-        properties: {
-          id: { type: "number", description: "Comment ID" },
-          author: { type: "string", description: "Comment author" },
-          email: { type: "string", description: "Author email" },
-          content: { type: "string", description: "Comment content" },
-          status: { type: "string", description: "Comment status" },
-          url: { type: "string", description: "Comment URL" },
-          created_at: { type: "date", description: "Creation date" },
-          updated_at: { type: "date", description: "Update date" },
-          ip: { type: "string", description: "IP address" },
-          user_agent: { type: "string", description: "User agent" },
+          template_suffix: { type: "string", description: "Template suffix" },
+          title: { type: "string", description: "Collection title" },
+          url: { type: "string", description: "Collection URL" },
         },
       },
 
       collections: {
         type: "Collections",
-        description: "Array of all collections",
-        properties: {
-          size: { type: "number", description: "Number of collections" },
-          all: { type: "array<collection>", description: "All collections" },
-        },
-      },
-
-      pages: {
-        type: "Pages",
-        description: "Array of all pages",
-        properties: {
-          size: { type: "number", description: "Number of pages" },
-          all: { type: "array<page>", description: "All pages" },
-        },
-      },
-
-      blogs: {
-        type: "Blogs",
-        description: "Array of all blogs",
-        properties: {
-          size: { type: "number", description: "Number of blogs" },
-          all: { type: "array<blog>", description: "All blogs" },
-        },
-      },
-
-      all_products: {
-        type: "AllProducts",
-        description: "All products in the store",
-        properties: {
-          size: { type: "number", description: "Total number of products" },
-        },
-      },
-
-      template: {
-        type: "Template",
-        description: "Current template information",
-        properties: {
-          name: { type: "string", description: "Template name" },
-          suffix: { type: "string", description: "Template suffix" },
-          directory: { type: "string", description: "Template directory" },
-        },
-      },
-
-      video: {
-        type: "Video",
-        description: "Represents a video",
-        properties: {
-          id: { type: "number", description: "Video ID" },
-          alt: { type: "string", description: "Alt text" },
-          sources: { type: "array<object>", description: "Video sources" },
-          preview_image: { type: "image", description: "Preview image" },
-          aspect_ratio: { type: "number", description: "Video aspect ratio" },
-          duration: { type: "number", description: "Video duration" },
-        },
-      },
-
-      checkout: {
-        type: "Checkout",
-        description: "Represents a checkout",
-        properties: {
-          id: { type: "string", description: "Checkout ID" },
-          currency: { type: "string", description: "Checkout currency" },
-          customer: { type: "customer", description: "Customer" },
-          billing_address: { type: "address", description: "Billing address" },
-          shipping_address: {
-            type: "address",
-            description: "Shipping address",
-          },
-          line_items: { type: "array<line_item>", description: "Line items" },
-          shipping_rate: {
-            type: "shipping_rate",
-            description: "Selected shipping rate",
-          },
-          shipping_method: {
-            type: "shipping_method",
-            description: "Shipping method",
-          },
-          tax_lines: { type: "array<tax_line>", description: "Tax lines" },
-          tax_price: { type: "money", description: "Tax amount" },
-          total_price: { type: "money", description: "Total price" },
-          subtotal_price: { type: "money", description: "Subtotal price" },
-          requires_shipping: {
-            type: "boolean",
-            description: "Whether checkout requires shipping",
-          },
-          gift_cards_enabled: {
-            type: "boolean",
-            description: "Whether gift cards are enabled",
-          },
-          taxes_included: {
-            type: "boolean",
-            description: "Whether taxes are included",
-          },
-          email: { type: "string", description: "Customer email" },
-          applied_gift_cards: {
-            type: "array<gift_card>",
-            description: "Applied gift cards",
-          },
-          discount_applications: {
-            type: "array<discount>",
-            description: "Applied discounts",
-          },
-        },
-      },
-
-      filter: {
-        type: "Filter",
-        description: "Represents a collection filter",
-        properties: {
-          label: { type: "string", description: "Filter label" },
-          param_name: { type: "string", description: "Filter parameter name" },
-          type: { type: "string", description: "Filter type" },
-          values: { type: "array<filter_value>", description: "Filter values" },
-          active_values: {
-            type: "array<filter_value>",
-            description: "Active filter values",
-          },
-          inactive_values: {
-            type: "array<filter_value>",
-            description: "Inactive filter values",
-          },
-          min_value: {
-            type: "object",
-            description: "Minimum value for range filters",
-          },
-          max_value: {
-            type: "object",
-            description: "Maximum value for range filters",
-          },
-          range_max: { type: "object", description: "Maximum possible value" },
-        },
-      },
-
-      paginate: {
-        type: "Paginate",
-        description: "Pagination object",
-        properties: {
-          current_page: { type: "number", description: "Current page number" },
-          current_offset: { type: "number", description: "Current offset" },
-          items: { type: "number", description: "Total number of items" },
-          parts: { type: "array<object>", description: "Pagination parts" },
-          pages: { type: "number", description: "Total number of pages" },
-          previous: { type: "object", description: "Previous page info" },
-          next: { type: "object", description: "Next page info" },
-        },
-      },
-
-      section: {
-        type: "Section",
-        description: "Current section",
-        properties: {
-          id: { type: "string", description: "Section ID" },
-          settings: { type: "object", description: "Section settings" },
-          blocks: { type: "array<block>", description: "Section blocks" },
-          location: { type: "string", description: "Section location" },
-        },
-      },
-
-      block: {
-        type: "Block",
-        description: "Theme section block",
-        properties: {
-          id: { type: "string", description: "Block ID" },
-          type: { type: "string", description: "Block type" },
-          settings: { type: "object", description: "Block settings" },
-          shopify_attributes: {
-            type: "string",
-            description: "Shopify attributes",
-          },
-        },
-      },
-
-      app: {
-        type: "App",
-        description: "Represents an app",
-        properties: {
-          id: { type: "number", description: "App ID" },
-          name: { type: "string", description: "App name" },
-          handle: { type: "string", description: "App handle" },
-        },
-      },
-
-      recommendations: {
-        type: "Recommendations",
-        description: "Product recommendations",
-        properties: {
-          performed: {
-            type: "boolean",
-            description: "Whether recommendations were performed",
-          },
-          products: {
-            type: "array<product>",
-            description: "Recommended products",
-          },
-          products_count: {
-            type: "number",
-            description: "Number of recommended products",
-          },
-          intent: { type: "string", description: "Recommendation intent" },
-        },
-      },
-
-      user: {
-        type: "User",
-        description: "Represents a user",
-        properties: {
-          id: { type: "number", description: "User ID" },
-          account_owner: {
-            type: "boolean",
-            description: "Whether user is account owner",
-          },
-          bio: { type: "string", description: "User bio" },
-          email: { type: "string", description: "User email" },
-          first_name: { type: "string", description: "User first name" },
-          homepage: { type: "string", description: "User homepage" },
-          last_name: { type: "string", description: "User last name" },
-          image: { type: "image", description: "User image" },
-        },
-      },
-
-      market: {
-        type: "Market",
-        description: "Represents a market",
-        properties: {
-          id: { type: "string", description: "Market ID" },
-          handle: { type: "string", description: "Market handle" },
-        },
-      },
-
-      location: {
-        type: "Location",
-        description: "Represents a location",
-        properties: {
-          id: { type: "number", description: "Location ID" },
-          name: { type: "string", description: "Location name" },
-          address: { type: "address", description: "Location address" },
-          latitude: { type: "number", description: "Location latitude" },
-          longitude: { type: "number", description: "Location longitude" },
-        },
-      },
-
-      policy: {
-        type: "Policy",
-        description: "Represents a shop policy",
-        properties: {
-          id: { type: "number", description: "Policy ID" },
-          title: { type: "string", description: "Policy title" },
-          body: { type: "string", description: "Policy content" },
-          handle: { type: "string", description: "Policy handle" },
-          url: { type: "string", description: "Policy URL" },
-          created_at: { type: "date", description: "Creation date" },
-          updated_at: { type: "date", description: "Update date" },
-        },
-      },
-
-      script_tag: {
-        type: "ScriptTag",
-        description: "Represents a script tag",
-        properties: {
-          id: { type: "number", description: "Script tag ID" },
-          src: { type: "string", description: "Script source URL" },
-          event: { type: "string", description: "Script event" },
-          display_scope: { type: "string", description: "Display scope" },
-          created_at: { type: "date", description: "Creation date" },
-          updated_at: { type: "date", description: "Update date" },
-        },
-      },
-
-      theme: {
-        type: "Theme",
-        description: "Represents a theme",
-        properties: {
-          id: { type: "number", description: "Theme ID" },
-          name: { type: "string", description: "Theme name" },
-          role: { type: "string", description: "Theme role" },
-          created_at: { type: "date", description: "Creation date" },
-          updated_at: { type: "date", description: "Update date" },
-        },
-      },
-
-      handle: {
-        type: "Handle",
-        description: "Current handle",
-        properties: {
-          current: { type: "string", description: "Current handle" },
-        },
-      },
-
-      global: {
-        type: "Global",
-        description: "Global object",
-        properties: {},
-      },
-
-      brand: {
-        type: "Brand",
-        description: "Represents brand information",
-        properties: {
-          name: { type: "string", description: "Brand name" },
-          logo: { type: "image", description: "Brand logo" },
-          square_logo: { type: "image", description: "Square brand logo" },
-          cover_image: { type: "image", description: "Brand cover image" },
-          metafields: {
-            type: "array<metafield>",
-            description: "Brand metafields",
-          },
-        },
-      },
-
-      font: {
-        type: "Font",
-        description: "Represents a font",
-        properties: {
-          family: { type: "string", description: "Font family" },
-          fallback_families: {
-            type: "string",
-            description: "Fallback font families",
-          },
-          style: { type: "string", description: "Font style" },
-          weight: { type: "string", description: "Font weight" },
-          variants: { type: "array<object>", description: "Font variants" },
-        },
-      },
-
-      link: {
-        type: "Link",
-        description: "Represents a navigation link",
-        properties: {
-          active: { type: "boolean", description: "Whether link is active" },
-          child_active: {
-            type: "boolean",
-            description: "Whether child link is active",
-          },
-          current: { type: "boolean", description: "Whether link is current" },
-          child_current: {
-            type: "boolean",
-            description: "Whether child link is current",
-          },
-          handle: { type: "string", description: "Link handle" },
-          levels: { type: "number", description: "Number of levels" },
-          links: { type: "array<link>", description: "Child links" },
-          object: { type: "object", description: "Linked object" },
-          title: { type: "string", description: "Link title" },
-          type: { type: "string", description: "Link type" },
-          url: { type: "string", description: "Link URL" },
-        },
-      },
-
-      linklists: {
-        type: "Linklists",
-        description: "All navigation menus",
-        properties: {
-          main_menu: { type: "linklist", description: "Main menu" },
-          footer: { type: "linklist", description: "Footer menu" },
-        },
-      },
-
-      linklist: {
-        type: "Linklist",
-        description: "Represents a navigation menu",
-        properties: {
-          handle: { type: "string", description: "Linklist handle" },
-          id: { type: "number", description: "Linklist ID" },
-          links: { type: "array<link>", description: "Menu links" },
-          title: { type: "string", description: "Linklist title" },
-        },
-      },
-
-      metaobject: {
-        type: "Metaobject",
-        description: "Represents a metaobject",
-        properties: {
-          id: { type: "string", description: "Metaobject ID" },
-          handle: { type: "string", description: "Metaobject handle" },
-          type: { type: "string", description: "Metaobject type" },
-          fields: { type: "object", description: "Metaobject fields" },
-          system: { type: "object", description: "System fields" },
-        },
-      },
-
-      shipping_rate: {
-        type: "ShippingRate",
-        description: "Represents a shipping rate",
-        properties: {
-          id: { type: "string", description: "Shipping rate ID" },
-          price: { type: "money", description: "Shipping rate price" },
-          title: { type: "string", description: "Shipping rate title" },
-        },
-      },
-
-      predictive_search: {
-        type: "PredictiveSearch",
-        description: "Predictive search results",
-        properties: {
-          performed: {
-            type: "boolean",
-            description: "Whether search was performed",
-          },
-          resources: { type: "object", description: "Search resources" },
-          terms: { type: "string", description: "Search terms" },
-          types: { type: "array<string>", description: "Resource types" },
-        },
-      },
-
-      apps: {
-        type: "Apps",
-        description: "Available apps",
-        properties: {
-          metafields: {
-            type: "array<metafield>",
-            description: "App metafields",
-          },
-        },
-      },
-
-      additional_checkout_buttons: {
-        type: "AdditionalCheckoutButtons",
-        description: "Additional checkout buttons",
-        properties: {},
-      },
-
-      all_country_option_tags: {
-        type: "AllCountryOptionTags",
-        description: "All country option tags for forms",
-        properties: {},
-      },
-
-      articles: {
-        type: "Articles",
-        description: "Array of all articles",
-        properties: {
-          size: { type: "number", description: "Number of articles" },
-          all: { type: "array<article>", description: "All articles" },
-        },
-      },
-
-      brand_color: {
-        type: "BrandColor",
-        description: "Represents a brand color",
-        properties: {
-          red: { type: "number", description: "Red component" },
-          green: { type: "number", description: "Green component" },
-          blue: { type: "number", description: "Blue component" },
-          alpha: { type: "number", description: "Alpha component" },
-          hue: { type: "number", description: "Hue component" },
-          saturation: { type: "number", description: "Saturation component" },
-          lightness: { type: "number", description: "Lightness component" },
-        },
-      },
-
-      canonical_url: {
-        type: "CanonicalUrl",
-        description: "Canonical URL of the current page",
-        properties: {},
-      },
-
-      closest: {
-        type: "Closest",
-        description: "Closest location or object",
+        description: "All collections on a store.",
         properties: {},
       },
 
       color: {
         type: "Color",
-        description: "Represents a color",
+        description: "A color from a color setting.",
         properties: {
-          red: { type: "number", description: "Red component" },
-          green: { type: "number", description: "Green component" },
-          blue: { type: "number", description: "Blue component" },
-          alpha: { type: "number", description: "Alpha component" },
-          hue: { type: "number", description: "Hue component" },
-          saturation: { type: "number", description: "Saturation component" },
-          lightness: { type: "number", description: "Lightness component" },
-          hex: { type: "string", description: "Hex color value" },
+          alpha: { type: "number", description: "Alpha transparency (0-1)" },
+          blue: { type: "number", description: "Blue component (0-255)" },
+          chroma: { type: "number", description: "Chroma value" },
+          color_space: {
+            type: "string",
+            description: "Color space (e.g., 'srgb')",
+          },
+          green: { type: "number", description: "Green component (0-255)" },
+          hue: { type: "number", description: "Hue value (0-360)" },
+          lightness: { type: "number", description: "Lightness percentage" },
+          oklch: { type: "string", description: "OKLCH color representation" },
+          oklcha: {
+            type: "string",
+            description: "OKLCHA color representation",
+          },
+          red: { type: "number", description: "Red component (0-255)" },
+          rgb: { type: "string", description: "RGB color string" },
+          rgba: { type: "string", description: "RGBA color string" },
+          saturation: { type: "number", description: "Saturation percentage" },
         },
       },
 
       color_scheme: {
         type: "ColorScheme",
-        description: "Represents a color scheme",
+        description: "A color scheme from a color_scheme setting.",
         properties: {
           id: { type: "string", description: "Color scheme ID" },
           settings: { type: "object", description: "Color scheme settings" },
@@ -1477,170 +513,386 @@ export class ShopifyObjectRegistry {
 
       color_scheme_group: {
         type: "ColorSchemeGroup",
-        description: "Group of color schemes",
+        description: "A color scheme group from a color_scheme_group setting.",
+        properties: {},
+      },
+
+      comment: {
+        type: "Comment",
+        description: "An article comment.",
         properties: {
-          schemes: {
-            type: "array<color_scheme>",
-            description: "Color schemes",
-          },
+          author: { type: "string", description: "Comment author" },
+          content: { type: "string", description: "Comment content" },
+          created_at: { type: "string", description: "Creation timestamp" },
+          email: { type: "string", description: "Author email" },
+          id: { type: "number", description: "Comment ID" },
+          status: { type: "string", description: "Comment status" },
+          updated_at: { type: "string", description: "Last update timestamp" },
+          url: { type: "string", description: "Comment URL" },
         },
       },
 
       company: {
         type: "Company",
-        description: "Represents a company",
+        description: "A company that a customer is purchasing for (B2B).",
         properties: {
-          id: { type: "number", description: "Company ID" },
-          name: { type: "string", description: "Company name" },
-          locations: {
+          available_locations: {
             type: "array<company_location>",
-            description: "Company locations",
+            description: "Available locations",
           },
-          main_address: {
-            type: "company_address",
-            description: "Main company address",
+          available_locations_count: {
+            type: "number",
+            description: "Number of locations",
           },
+          external_id: { type: "string", description: "External identifier" },
+          id: { type: "number", description: "Company ID" },
+          metafields: {
+            type: "array<metafield>",
+            description: "Associated metafields",
+          },
+          name: { type: "string", description: "Company name" },
         },
       },
 
       company_address: {
         type: "CompanyAddress",
-        description: "Represents a company address",
+        description: "Address of a company location (B2B).",
         properties: {
-          id: { type: "number", description: "Address ID" },
-          address1: { type: "string", description: "Address line 1" },
-          address2: { type: "string", description: "Address line 2" },
+          address1: { type: "string", description: "First address line" },
+          address2: { type: "string", description: "Second address line" },
+          attention: { type: "string", description: "Attention line" },
           city: { type: "string", description: "City" },
-          country: { type: "string", description: "Country" },
+          country: { type: "country", description: "Country object" },
           country_code: { type: "string", description: "Country code" },
-          province: { type: "string", description: "Province" },
+          first_name: { type: "string", description: "First name" },
+          id: { type: "number", description: "Address ID" },
+          last_name: { type: "string", description: "Last name" },
+          province: { type: "string", description: "Province/state" },
           province_code: { type: "string", description: "Province code" },
-          zip: { type: "string", description: "ZIP code" },
+          street: { type: "string", description: "Complete street address" },
+          zip: { type: "string", description: "Postal code" },
         },
       },
 
       company_location: {
         type: "CompanyLocation",
-        description: "Represents a company location",
+        description: "A location of the company for B2B purchases.",
         properties: {
+          company: { type: "company", description: "Parent company" },
+          current: {
+            type: "boolean",
+            description: "Whether this is current location",
+          },
+          external_id: { type: "string", description: "External identifier" },
           id: { type: "number", description: "Location ID" },
+          metafields: {
+            type: "array<metafield>",
+            description: "Associated metafields",
+          },
           name: { type: "string", description: "Location name" },
-          address: { type: "company_address", description: "Location address" },
-          tax_registrations: {
-            type: "array<object>",
-            description: "Tax registrations",
+          shipping_address: {
+            type: "company_address",
+            description: "Shipping address",
+          },
+          tax_registration_id: {
+            type: "number",
+            description: "Tax registration ID",
+          },
+          url_to_set_as_current: {
+            type: "string",
+            description: "URL to set as current",
           },
         },
       },
 
       content_for_additional_checkout_buttons: {
         type: "ContentForAdditionalCheckoutButtons",
-        description: "Content for additional checkout buttons",
+        description:
+          "Returns checkout buttons for payment providers with offsite checkouts.",
         properties: {},
       },
 
       content_for_header: {
         type: "ContentForHeader",
-        description: "Content for header section",
+        description:
+          "Dynamically returns all scripts required by Shopify. Must be included in theme.liquid.",
         properties: {},
       },
 
       content_for_index: {
         type: "ContentForIndex",
-        description: "Content for index page",
+        description:
+          "Dynamically returns content of sections for the home page.",
         properties: {},
       },
 
       content_for_layout: {
         type: "ContentForLayout",
-        description: "Content for layout",
+        description:
+          "Dynamically returns content based on current template. Must be included in theme.liquid.",
         properties: {},
+      },
+
+      country: {
+        type: "Country",
+        description: "A country supported by store's localization options.",
+        properties: {
+          available_languages: {
+            type: "array<shop_locale>",
+            description: "Available languages",
+          },
+          continent: { type: "string", description: "Continent name" },
+          currency: { type: "currency", description: "Country currency" },
+          iso_code: { type: "string", description: "ISO country code" },
+          market: { type: "market", description: "Associated market" },
+          name: { type: "string", description: "Country name" },
+          popular: {
+            type: "boolean",
+            description: "Whether country is popular",
+          },
+          unit_system: {
+            type: "string",
+            description: "Unit system (metric/imperial)",
+          },
+        },
       },
 
       country_option_tags: {
         type: "CountryOptionTags",
-        description: "Country option tags for forms",
+        description: "Creates <option> tags for countries in shipping zones.",
         properties: {},
+      },
+
+      currency: {
+        type: "Currency",
+        description: "Information about a currency.",
+        properties: {
+          iso_code: { type: "string", description: "ISO currency code" },
+          name: { type: "string", description: "Currency name" },
+          symbol: { type: "string", description: "Currency symbol" },
+        },
       },
 
       current_page: {
         type: "CurrentPage",
-        description: "Current page number in pagination",
+        description: "Current page number for pagination.",
         properties: {},
       },
 
       current_tags: {
         type: "CurrentTags",
-        description: "Currently active tags",
+        description: "Currently applied tags for filtering.",
         properties: {},
+      },
+
+      customer: {
+        type: "Customer",
+        description: "A customer of the store.",
+        properties: {
+          accepts_marketing: {
+            type: "boolean",
+            description: "Marketing acceptance",
+          },
+          addresses: {
+            type: "array<address>",
+            description: "Customer addresses",
+          },
+          addresses_count: {
+            type: "number",
+            description: "Number of addresses",
+          },
+          b2b: { type: "boolean", description: "Whether customer is B2B" },
+          company_available_locations: {
+            type: "array<company_location>",
+            description: "Available company locations",
+          },
+          company_available_locations_count: {
+            type: "number",
+            description: "Number of company locations",
+          },
+          current_company: { type: "company", description: "Current company" },
+          current_location: {
+            type: "company_location",
+            description: "Current location",
+          },
+          default_address: { type: "address", description: "Default address" },
+          email: { type: "string", description: "Customer email" },
+          first_name: { type: "string", description: "First name" },
+          has_account: {
+            type: "boolean",
+            description: "Whether customer has account",
+          },
+          has_avatar: {
+            type: "boolean",
+            description: "Whether customer has avatar",
+          },
+          id: { type: "number", description: "Customer ID" },
+          last_name: { type: "string", description: "Last name" },
+          last_order: { type: "order", description: "Most recent order" },
+          name: { type: "string", description: "Full name" },
+          orders: { type: "array<order>", description: "Customer orders" },
+          orders_count: { type: "number", description: "Number of orders" },
+          payment_methods: {
+            type: "array<customer_payment_method>",
+            description: "Saved payment methods",
+          },
+          phone: { type: "string", description: "Phone number" },
+          store_credit_account: {
+            type: "store_credit_account",
+            description: "Store credit account",
+          },
+          tags: { type: "array<string>", description: "Customer tags" },
+          tax_exempt: { type: "boolean", description: "Whether tax exempt" },
+          total_spent: { type: "number", description: "Total amount spent" },
+        },
       },
 
       customer_payment_method: {
         type: "CustomerPaymentMethod",
-        description: "Customer payment method",
+        description: "A customer's saved payment method.",
         properties: {
-          id: { type: "string", description: "Payment method ID" },
-          type: { type: "string", description: "Payment method type" },
-          instrument: { type: "object", description: "Payment instrument" },
+          payment_instrument_type: {
+            type: "string",
+            description: "Type of payment instrument",
+          },
+          token: { type: "string", description: "Payment method token" },
+        },
+      },
+
+      discount: {
+        type: "Discount",
+        description:
+          "A discount applied to cart, line item, or order. Replaced by discount_allocation and discount_application.",
+        deprecated: true,
+        properties: {
+          amount: { type: "number", description: "Discount amount" },
+          code: { type: "string", description: "Discount code" },
+          savings: { type: "number", description: "Amount saved" },
+          title: { type: "string", description: "Discount title" },
+          total_amount: {
+            type: "number",
+            description: "Total discount amount",
+          },
+          total_savings: { type: "number", description: "Total savings" },
+          type: { type: "string", description: "Discount type" },
         },
       },
 
       discount_allocation: {
         type: "DiscountAllocation",
-        description: "Discount allocation to line item",
+        description: "Information about how a discount affects an item.",
         properties: {
-          amount: { type: "money", description: "Discount amount" },
+          amount: { type: "number", description: "Allocated discount amount" },
           discount_application: {
             type: "discount_application",
-            description: "Applied discount",
+            description: "Related discount application",
           },
         },
       },
 
       discount_application: {
         type: "DiscountApplication",
-        description: "Applied discount",
+        description: "Information about the intent of a discount.",
         properties: {
-          type: { type: "string", description: "Discount type" },
-          title: { type: "string", description: "Discount title" },
-          description: { type: "string", description: "Discount description" },
-          value: { type: "string", description: "Discount value" },
-          value_type: { type: "string", description: "Discount value type" },
-          allocation_method: {
+          target_selection: {
             type: "string",
-            description: "Allocation method",
+            description: "How targets are selected",
           },
-          target_selection: { type: "string", description: "Target selection" },
-          target_type: { type: "string", description: "Target type" },
+          target_type: { type: "string", description: "Type of target" },
+          title: { type: "string", description: "Discount title" },
           total_allocated_amount: {
-            type: "money",
+            type: "number",
             description: "Total allocated amount",
+          },
+          type: { type: "string", description: "Application type" },
+          value: { type: "number", description: "Discount value" },
+          value_type: {
+            type: "string",
+            description: "Value type (percentage/fixed_amount)",
           },
         },
       },
 
       external_video: {
         type: "ExternalVideo",
-        description: "External video (YouTube/Vimeo)",
+        description: "Information about external video from YouTube or Vimeo.",
         properties: {
-          id: { type: "string", description: "Video ID" },
-          host: { type: "string", description: "Video host" },
-          external_id: { type: "string", description: "External video ID" },
+          alt: { type: "string", description: "Alt text" },
           aspect_ratio: { type: "number", description: "Video aspect ratio" },
+          external_id: { type: "string", description: "External video ID" },
+          host: { type: "string", description: "Video host (youtube/vimeo)" },
+          id: { type: "number", description: "Internal ID" },
+          media_type: { type: "string", description: "Media type" },
+          position: { type: "number", description: "Position in media array" },
+          preview_image: { type: "image", description: "Preview image" },
+        },
+      },
+
+      filter: {
+        type: "Filter",
+        description: "A storefront filter.",
+        properties: {
+          active_values: {
+            type: "array<filter_value>",
+            description: "Currently active values",
+          },
+          false_value: {
+            type: "filter_value",
+            description: "False value for boolean filters",
+          },
+          inactive_values: {
+            type: "array<filter_value>",
+            description: "Inactive values",
+          },
+          label: { type: "string", description: "Filter label" },
+          max_value: {
+            type: "filter_value",
+            description: "Maximum value for range filters",
+          },
+          min_value: {
+            type: "filter_value",
+            description: "Minimum value for range filters",
+          },
+          operator: { type: "string", description: "Filter operator" },
+          param_name: { type: "string", description: "URL parameter name" },
+          presentation: {
+            type: "string",
+            description: "How filter should be presented",
+          },
+          range_max: { type: "number", description: "Maximum range value" },
+          true_value: {
+            type: "filter_value",
+            description: "True value for boolean filters",
+          },
+          type: { type: "string", description: "Filter type" },
+          url_to_remove: {
+            type: "string",
+            description: "URL to remove filter",
+          },
+          values: {
+            type: "array<filter_value>",
+            description: "All filter values",
+          },
         },
       },
 
       filter_value: {
         type: "FilterValue",
-        description: "Filter value",
+        description: "A specific value of a filter.",
         properties: {
-          label: { type: "string", description: "Filter value label" },
-          count: { type: "number", description: "Number of products" },
-          active: { type: "boolean", description: "Whether filter is active" },
-          url_to_add: { type: "string", description: "URL to add filter" },
+          active: { type: "boolean", description: "Whether value is active" },
+          count: {
+            type: "number",
+            description: "Number of products with this value",
+          },
+          image: { type: "image", description: "Associated image" },
+          label: { type: "string", description: "Display label" },
+          param_name: { type: "string", description: "URL parameter name" },
+          swatch: { type: "swatch", description: "Color/image swatch" },
+          url_to_add: { type: "string", description: "URL to add this filter" },
           url_to_remove: {
             type: "string",
-            description: "URL to remove filter",
+            description: "URL to remove this filter",
           },
           value: { type: "string", description: "Filter value" },
         },
@@ -1648,61 +900,223 @@ export class ShopifyObjectRegistry {
 
       filter_value_display: {
         type: "FilterValueDisplay",
-        description: "Filter value display options",
+        description:
+          "Visual representation of filter value. Replaced by swatch.",
+        deprecated: true,
         properties: {
           type: { type: "string", description: "Display type" },
-          has_color: { type: "boolean", description: "Whether has color" },
+          value: { type: "any", description: "Display value" },
         },
       },
 
       focal_point: {
         type: "FocalPoint",
-        description: "Image focal point",
+        description: "Focal point for an image to remain visible when cropped.",
         properties: {
-          x: { type: "number", description: "X coordinate" },
-          y: { type: "number", description: "Y coordinate" },
+          x: { type: "number", description: "X coordinate percentage" },
+          y: { type: "number", description: "Y coordinate percentage" },
+        },
+      },
+
+      font: {
+        type: "Font",
+        description: "A font from a font_picker setting.",
+        properties: {
+          baseline_ratio: { type: "number", description: "Baseline ratio" },
+          fallback_families: {
+            type: "string",
+            description: "Fallback font families",
+          },
+          family: { type: "string", description: "Font family name" },
+          style: { type: "string", description: "Font style" },
+          system: {
+            type: "boolean",
+            description: "Whether it's a system font",
+          },
+          variants: { type: "array<font>", description: "Font variants" },
+          weight: { type: "number", description: "Font weight" },
+        },
+      },
+
+      forloop: {
+        type: "ForLoop",
+        description: "Information about a parent for loop.",
+        properties: {
+          first: { type: "boolean", description: "Whether first iteration" },
+          index: { type: "number", description: "Current iteration (1-based)" },
+          index0: {
+            type: "number",
+            description: "Current iteration (0-based)",
+          },
+          last: { type: "boolean", description: "Whether last iteration" },
+          length: { type: "number", description: "Total iterations" },
+          parentloop: { type: "forloop", description: "Parent loop object" },
+          rindex: { type: "number", description: "Reverse index (1-based)" },
+          rindex0: { type: "number", description: "Reverse index (0-based)" },
+        },
+      },
+
+      form: {
+        type: "Form",
+        description: "Information about a form created by form tag.",
+        properties: {
+          address1: { type: "string", description: "Address line 1" },
+          address2: { type: "string", description: "Address line 2" },
+          author: { type: "string", description: "Author name" },
+          body: { type: "string", description: "Form body content" },
+          city: { type: "string", description: "City" },
+          company: { type: "string", description: "Company" },
+          country: { type: "string", description: "Country" },
+          email: { type: "string", description: "Email address" },
+          errors: { type: "form_errors", description: "Form errors" },
+          first_name: { type: "string", description: "First name" },
+          id: { type: "string", description: "Form ID" },
+          last_name: { type: "string", description: "Last name" },
+          message: { type: "string", description: "Message content" },
+          name: { type: "string", description: "Full name" },
+          password_needed: {
+            type: "boolean",
+            description: "Whether password needed",
+          },
+          phone: { type: "string", description: "Phone number" },
+          posted_successfully: {
+            type: "boolean",
+            description: "Whether posted successfully",
+          },
+          province: { type: "string", description: "Province/state" },
+          set_as_default_checkbox: {
+            type: "string",
+            description: "Default checkbox HTML",
+          },
+          zip: { type: "string", description: "ZIP/postal code" },
         },
       },
 
       form_errors: {
         type: "FormErrors",
-        description: "Form validation errors",
-        properties: {},
+        description: "Error category strings for form errors.",
+        properties: {
+          messages: { type: "array<string>", description: "Error messages" },
+          translated_fields: {
+            type: "array<string>",
+            description: "Translated field names",
+          },
+        },
+      },
+
+      fulfillment: {
+        type: "Fulfillment",
+        description: "Order fulfillment information.",
+        properties: {
+          created_at: { type: "string", description: "Creation timestamp" },
+          fulfillment_line_items: {
+            type: "array<line_item>",
+            description: "Fulfilled items",
+          },
+          item_count: { type: "number", description: "Number of items" },
+          tracking_company: { type: "string", description: "Shipping company" },
+          tracking_number: { type: "string", description: "Tracking number" },
+          tracking_numbers: {
+            type: "array<string>",
+            description: "Multiple tracking numbers",
+          },
+          tracking_url: { type: "string", description: "Tracking URL" },
+        },
       },
 
       generic_file: {
         type: "GenericFile",
-        description: "Generic file upload",
+        description:
+          "A file from file_reference metafield that's not image or video.",
         properties: {
           alt: { type: "string", description: "Alt text" },
-          created_at: { type: "date", description: "Creation date" },
-          id: { type: "string", description: "File ID" },
+          id: { type: "number", description: "File ID" },
+          media_type: { type: "string", description: "Media type" },
+          position: { type: "number", description: "Position in array" },
           preview_image: { type: "image", description: "Preview image" },
           url: { type: "string", description: "File URL" },
         },
       },
 
-      group: {
-        type: "Group",
-        description: "Settings group",
+      gift_card: {
+        type: "GiftCard",
+        description: "A gift card issued to customer or recipient.",
         properties: {
-          id: { type: "string", description: "Group ID" },
-          label: { type: "string", description: "Group label" },
+          balance: { type: "number", description: "Current balance" },
+          code: { type: "string", description: "Gift card code" },
+          currency: { type: "string", description: "Currency" },
+          customer: { type: "customer", description: "Associated customer" },
+          enabled: { type: "boolean", description: "Whether enabled" },
+          expired: { type: "boolean", description: "Whether expired" },
+          expires_on: { type: "string", description: "Expiration date" },
+          initial_value: { type: "number", description: "Initial value" },
+          last_four_characters: {
+            type: "string",
+            description: "Last 4 characters of code",
+          },
+          message: { type: "string", description: "Gift message" },
+          pass_url: { type: "string", description: "Apple Wallet pass URL" },
+          product: { type: "product", description: "Associated product" },
+          properties: { type: "object", description: "Custom properties" },
+          qr_identifier: { type: "string", description: "QR code identifier" },
+          recipient: { type: "recipient", description: "Gift recipient" },
+          send_on: { type: "string", description: "Send date" },
+          template_suffix: { type: "string", description: "Template suffix" },
+          url: { type: "string", description: "Gift card URL" },
         },
       },
 
-      images: {
-        type: "Images",
-        description: "Collection of images",
+      group: {
+        type: "Group",
+        description: "A group of rules for robots.txt file.",
         properties: {
-          size: { type: "number", description: "Number of images" },
-          all: { type: "array<image>", description: "All images" },
+          rules: { type: "array<rule>", description: "Robots rules" },
+          sitemap: { type: "sitemap", description: "Sitemap information" },
+          user_agent: {
+            type: "user_agent",
+            description: "User agent information",
+          },
+        },
+      },
+
+      handle: {
+        type: "Handle",
+        description: "Handle of resource associated with current template.",
+        properties: {},
+      },
+
+      image: {
+        type: "Image",
+        description: "An image, such as product or collection image.",
+        properties: {
+          alt: { type: "string", description: "Alt text" },
+          aspect_ratio: { type: "number", description: "Image aspect ratio" },
+          attached_to_variant: {
+            type: "boolean",
+            description: "Whether attached to variant",
+          },
+          height: { type: "number", description: "Image height" },
+          id: { type: "number", description: "Image ID" },
+          media_type: { type: "string", description: "Media type" },
+          position: { type: "number", description: "Position in array" },
+          presentation: {
+            type: "image_presentation",
+            description: "Presentation settings",
+          },
+          preview_image: { type: "image", description: "Preview image" },
+          product_id: { type: "number", description: "Associated product ID" },
+          src: { type: "string", description: "Image URL" },
+          variants: {
+            type: "array<variant>",
+            description: "Associated variants",
+          },
+          width: { type: "number", description: "Image width" },
         },
       },
 
       image_presentation: {
         type: "ImagePresentation",
-        description: "Image presentation settings",
+        description: "Presentation settings for an image.",
         properties: {
           focal_point: {
             type: "focal_point",
@@ -1711,117 +1125,488 @@ export class ShopifyObjectRegistry {
         },
       },
 
+      images: {
+        type: "Images",
+        description: "All images uploaded to store.",
+        properties: {},
+      },
+
+      line_item: {
+        type: "LineItem",
+        description:
+          "A line in cart, checkout, or order representing a product variant.",
+        properties: {
+          discount_allocations: {
+            type: "array<discount_allocation>",
+            description: "Applied discounts",
+          },
+          error_message: {
+            type: "string",
+            description: "Error message if any",
+          },
+          final_line_price: {
+            type: "number",
+            description: "Final line price after discounts",
+          },
+          final_price: {
+            type: "number",
+            description: "Final unit price after discounts",
+          },
+          fulfillment: {
+            type: "fulfillment",
+            description: "Fulfillment information",
+          },
+          fulfillment_service: {
+            type: "string",
+            description: "Fulfillment service",
+          },
+          gift_card: {
+            type: "boolean",
+            description: "Whether item is gift card",
+          },
+          grams: { type: "number", description: "Weight in grams" },
+          id: { type: "number", description: "Line item ID" },
+          image: { type: "image", description: "Product image" },
+          item_components: {
+            type: "array<line_item>",
+            description: "Component items",
+          },
+          key: { type: "string", description: "Unique key" },
+          line_level_discount_allocations: {
+            type: "array<discount_allocation>",
+            description: "Line-level discounts",
+          },
+          line_level_total_discount: {
+            type: "number",
+            description: "Total line-level discount",
+          },
+          message: { type: "string", description: "Associated message" },
+          options_with_values: {
+            type: "object",
+            description: "Variant options",
+          },
+          original_line_price: {
+            type: "number",
+            description: "Original line price",
+          },
+          original_price: {
+            type: "number",
+            description: "Original unit price",
+          },
+          product: { type: "product", description: "Associated product" },
+          product_id: { type: "number", description: "Product ID" },
+          properties: { type: "object", description: "Custom properties" },
+          quantity: { type: "number", description: "Quantity" },
+          requires_shipping: {
+            type: "boolean",
+            description: "Whether requires shipping",
+          },
+          selling_plan_allocation: {
+            type: "selling_plan_allocation",
+            description: "Selling plan info",
+          },
+          sku: { type: "string", description: "SKU" },
+          successfully_fulfilled_quantity: {
+            type: "number",
+            description: "Fulfilled quantity",
+          },
+          tax_lines: {
+            type: "array<tax_line>",
+            description: "Tax information",
+          },
+          taxable: { type: "boolean", description: "Whether taxable" },
+          title: { type: "string", description: "Line item title" },
+          unit_price: { type: "number", description: "Unit price" },
+          unit_price_measurement: {
+            type: "unit_price_measurement",
+            description: "Unit measurement",
+          },
+          url: { type: "string", description: "Product URL" },
+          url_to_remove: {
+            type: "string",
+            description: "URL to remove from cart",
+          },
+          variant: { type: "variant", description: "Product variant" },
+          variant_id: { type: "number", description: "Variant ID" },
+          vendor: { type: "string", description: "Vendor name" },
+        },
+      },
+
+      link: {
+        type: "Link",
+        description: "A link in a menu.",
+        properties: {
+          active: { type: "boolean", description: "Whether link is active" },
+          child_active: {
+            type: "boolean",
+            description: "Whether child is active",
+          },
+          child_current: {
+            type: "boolean",
+            description: "Whether child is current",
+          },
+          current: { type: "boolean", description: "Whether link is current" },
+          handle: { type: "string", description: "Link handle" },
+          levels: { type: "number", description: "Number of nested levels" },
+          links: { type: "array<link>", description: "Child links" },
+          object: { type: "any", description: "Linked object" },
+          title: { type: "string", description: "Link title" },
+          type: { type: "string", description: "Link type" },
+          url: { type: "string", description: "Link URL" },
+        },
+      },
+
+      linklist: {
+        type: "Linklist",
+        description: "A menu in store.",
+        properties: {
+          handle: { type: "string", description: "Menu handle" },
+          levels: { type: "number", description: "Number of levels" },
+          links: { type: "array<link>", description: "Menu links" },
+          title: { type: "string", description: "Menu title" },
+        },
+      },
+
+      linklists: {
+        type: "Linklists",
+        description: "All menus in store.",
+        properties: {},
+      },
+
+      localization: {
+        type: "Localization",
+        description:
+          "Information about countries and languages available on store.",
+        properties: {
+          available_countries: {
+            type: "array<country>",
+            description: "Available countries",
+          },
+          available_languages: {
+            type: "array<shop_locale>",
+            description: "Available languages",
+          },
+          country: { type: "country", description: "Current country" },
+          language: { type: "shop_locale", description: "Current language" },
+          market: { type: "market", description: "Current market" },
+        },
+      },
+
+      location: {
+        type: "Location",
+        description: "A store location with local pickup enabled.",
+        properties: {
+          address: { type: "address", description: "Location address" },
+          id: { type: "number", description: "Location ID" },
+          latitude: { type: "number", description: "Latitude coordinate" },
+          longitude: { type: "number", description: "Longitude coordinate" },
+          metafields: {
+            type: "metafields",
+            description: "Associated metafields",
+          },
+          name: { type: "string", description: "Location name" },
+        },
+      },
+
+      market: {
+        type: "Market",
+        description: "A group of regions that merchant targets for sales.",
+        properties: {
+          handle: { type: "string", description: "Market handle" },
+          id: { type: "string", description: "Market ID" },
+          metafields: {
+            type: "array<metafield>",
+            description: "Associated metafields",
+          },
+        },
+      },
+
       measurement: {
         type: "Measurement",
-        description: "Unit measurement",
+        description:
+          "A measurement from dimension, volume, or weight metafield.",
         properties: {
           type: { type: "string", description: "Measurement type" },
-          unit: { type: "string", description: "Measurement unit" },
+          unit: { type: "string", description: "Unit of measurement" },
           value: { type: "number", description: "Measurement value" },
         },
       },
 
       media: {
         type: "Media",
-        description: "Media object (image, video, etc.)",
+        description:
+          "Abstract media object representing image, model, video, or external_video.",
         properties: {
-          id: { type: "string", description: "Media ID" },
-          media_type: { type: "string", description: "Media type" },
           alt: { type: "string", description: "Alt text" },
-          position: { type: "number", description: "Media position" },
+          id: { type: "number", description: "Media ID" },
+          media_type: { type: "string", description: "Media type" },
+          position: { type: "number", description: "Position in array" },
           preview_image: { type: "image", description: "Preview image" },
+        },
+      },
+
+      metafield: {
+        type: "Metafield",
+        description: "A metafield attached to parent object.",
+        properties: {
+          list: {
+            type: "boolean",
+            description: "Whether metafield is list type",
+          },
+          type: { type: "string", description: "Metafield type" },
+          value: {
+            type: "any",
+            description: "Metafield value (type varies by metafield type)",
+          },
+        },
+      },
+
+      metaobject: {
+        type: "Metaobject",
+        description: "A metaobject entry with values for defined fields.",
+        properties: {
+          system: {
+            type: "metaobject_system",
+            description: "System information",
+          },
         },
       },
 
       metaobject_definition: {
         type: "MetaobjectDefinition",
-        description: "Metaobject definition",
+        description: "Defines structure of metaobject type.",
         properties: {
-          id: { type: "string", description: "Definition ID" },
-          type: { type: "string", description: "Definition type" },
-          name: { type: "string", description: "Definition name" },
-          field_definitions: {
-            type: "array<object>",
-            description: "Field definitions",
+          values: {
+            type: "array<metaobject>",
+            description: "Metaobject entries",
           },
+          values_count: { type: "number", description: "Number of entries" },
         },
       },
 
       metaobject_system: {
         type: "MetaobjectSystem",
-        description: "Metaobject system fields",
+        description: "Basic system information about metaobject.",
         properties: {
-          id: { type: "string", description: "System ID" },
-          handle: { type: "string", description: "System handle" },
-          type: { type: "string", description: "System type" },
+          handle: { type: "string", description: "Metaobject handle" },
+          id: { type: "number", description: "Metaobject ID" },
+          type: { type: "string", description: "Metaobject type" },
+          url: { type: "string", description: "Metaobject URL" },
         },
       },
 
       metaobjects: {
         type: "Metaobjects",
-        description: "Collection of metaobjects",
-        properties: {
-          size: { type: "number", description: "Number of metaobjects" },
-          all: { type: "array<metaobject>", description: "All metaobjects" },
-        },
+        description: "All metaobjects in store.",
+        properties: {},
       },
 
       model: {
         type: "Model",
-        description: "3D model",
+        description: "A 3D model uploaded as product media.",
         properties: {
-          id: { type: "string", description: "Model ID" },
           alt: { type: "string", description: "Alt text" },
+          id: { type: "number", description: "Model ID" },
+          media_type: { type: "string", description: "Media type" },
+          position: { type: "number", description: "Position in array" },
+          preview_image: { type: "image", description: "Preview image" },
           sources: {
             type: "array<model_source>",
-            description: "Model sources",
+            description: "Model source files",
           },
-          preview_image: { type: "image", description: "Preview image" },
         },
       },
 
       model_source: {
         type: "ModelSource",
-        description: "3D model source",
+        description: "A model source file.",
         properties: {
-          format: { type: "string", description: "Model format" },
+          format: { type: "string", description: "File format" },
           mime_type: { type: "string", description: "MIME type" },
-          url: { type: "string", description: "Model URL" },
+          url: { type: "string", description: "File URL" },
         },
       },
 
       money: {
         type: "Money",
-        description: "Money amount with currency",
+        description: "Money value in customer's local currency.",
         properties: {
-          amount: { type: "number", description: "Money amount" },
-          currency_code: { type: "string", description: "Currency code" },
+          currency: { type: "currency", description: "Currency information" },
+        },
+      },
+
+      order: {
+        type: "Order",
+        description: "An order.",
+        properties: {
+          attributes: { type: "object", description: "Order attributes" },
+          billing_address: { type: "address", description: "Billing address" },
+          cancel_reason: { type: "string", description: "Cancellation reason" },
+          cancel_reason_label: {
+            type: "string",
+            description: "Cancellation reason label",
+          },
+          cancelled: { type: "boolean", description: "Whether cancelled" },
+          cancelled_at: {
+            type: "string",
+            description: "Cancellation timestamp",
+          },
+          cart_level_discount_applications: {
+            type: "array<discount_application>",
+            description: "Cart discounts",
+          },
+          confirmation_number: {
+            type: "string",
+            description: "Confirmation number",
+          },
+          created_at: { type: "string", description: "Creation timestamp" },
+          customer: { type: "customer", description: "Customer information" },
+          customer_order_url: {
+            type: "string",
+            description: "Customer order URL",
+          },
+          customer_url: { type: "string", description: "Customer URL" },
+          discount_applications: {
+            type: "array<discount_application>",
+            description: "All discounts",
+          },
+          email: { type: "string", description: "Customer email" },
+          financial_status: { type: "string", description: "Financial status" },
+          financial_status_label: {
+            type: "any",
+            description: "Financial status label",
+          },
+          fulfillment_status: {
+            type: "string",
+            description: "Fulfillment status",
+          },
+          fulfillment_status_label: {
+            type: "string",
+            description: "Fulfillment status label",
+          },
+          id: { type: "number", description: "Order ID" },
+          item_count: { type: "number", description: "Number of items" },
+          line_items: { type: "array<line_item>", description: "Order items" },
+          line_items_subtotal_price: {
+            type: "number",
+            description: "Items subtotal",
+          },
+          metafields: {
+            type: "metafields",
+            description: "Associated metafields",
+          },
+          name: { type: "string", description: "Order name" },
+          note: { type: "string", description: "Order note" },
+          order_number: { type: "number", description: "Order number" },
+          order_status_url: { type: "string", description: "Order status URL" },
+          phone: { type: "string", description: "Customer phone" },
+          pickup_in_store: {
+            type: "boolean",
+            description: "Whether pickup in store",
+          },
+          shipping_address: {
+            type: "address",
+            description: "Shipping address",
+          },
+          shipping_methods: {
+            type: "array<shipping_method>",
+            description: "Shipping methods",
+          },
+          shipping_price: { type: "number", description: "Shipping cost" },
+          subtotal_line_items: {
+            type: "array<line_item>",
+            description: "Subtotal items",
+          },
+          subtotal_price: { type: "number", description: "Subtotal price" },
+          tags: { type: "array<string>", description: "Order tags" },
+          tax_lines: {
+            type: "array<tax_line>",
+            description: "Tax information",
+          },
+          tax_price: { type: "number", description: "Tax amount" },
+          total_discounts: { type: "number", description: "Total discounts" },
+          total_duties: { type: "number", description: "Total duties" },
+          total_net_amount: { type: "number", description: "Net amount" },
+          total_price: { type: "number", description: "Total price" },
+          total_refunded_amount: {
+            type: "number",
+            description: "Refunded amount",
+          },
+          transactions: {
+            type: "array<transaction>",
+            description: "Payment transactions",
+          },
+        },
+      },
+
+      page: {
+        type: "Page",
+        description: "A page on store.",
+        properties: {
+          author: { type: "string", description: "Page author" },
+          content: { type: "string", description: "Page content" },
+          handle: { type: "string", description: "Page handle" },
+          id: { type: "number", description: "Page ID" },
+          metafields: {
+            type: "metafields",
+            description: "Associated metafields",
+          },
+          published_at: {
+            type: "string",
+            description: "Publication timestamp",
+          },
+          template_suffix: { type: "string", description: "Template suffix" },
+          title: { type: "string", description: "Page title" },
+          url: { type: "string", description: "Page URL" },
         },
       },
 
       page_description: {
         type: "PageDescription",
-        description: "Current page description",
+        description: "Meta description of current page.",
         properties: {},
       },
 
       page_image: {
         type: "PageImage",
-        description: "Current page image",
+        description:
+          "Image for search engine listings and social media previews.",
         properties: {},
       },
 
       page_title: {
         type: "PageTitle",
-        description: "Current page title",
+        description: "Page title of current page.",
         properties: {},
+      },
+
+      pages: {
+        type: "Pages",
+        description: "All pages on store.",
+        properties: {},
+      },
+
+      paginate: {
+        type: "Paginate",
+        description: "Information about pagination inside paginate tags.",
+        properties: {
+          current_offset: { type: "number", description: "Current offset" },
+          current_page: { type: "number", description: "Current page number" },
+          items: { type: "number", description: "Number of items" },
+          next: { type: "part", description: "Next page part" },
+          page_param: { type: "string", description: "Page parameter name" },
+          page_size: { type: "number", description: "Items per page" },
+          pages: { type: "number", description: "Total pages" },
+          parts: { type: "array<part>", description: "Pagination parts" },
+          previous: { type: "part", description: "Previous page part" },
+        },
       },
 
       part: {
         type: "Part",
-        description: "Pagination part",
+        description: "A part in pagination navigation.",
         properties: {
-          is_link: { type: "boolean", description: "Whether part is a link" },
+          is_link: { type: "boolean", description: "Whether part is link" },
           title: { type: "string", description: "Part title" },
           url: { type: "string", description: "Part URL" },
         },
@@ -1829,203 +1614,523 @@ export class ShopifyObjectRegistry {
 
       pending_payment_instruction_input: {
         type: "PendingPaymentInstructionInput",
-        description: "Pending payment instruction input",
+        description: "Payment information for offline transaction completion.",
         properties: {
-          payment_method: { type: "string", description: "Payment method" },
-          payment_amount: { type: "money", description: "Payment amount" },
+          header: { type: "string", description: "Instruction header" },
+          value: { type: "string", description: "Instruction value" },
+        },
+      },
+
+      policy: {
+        type: "Policy",
+        description: "A store policy.",
+        properties: {
+          body: { type: "string", description: "Policy content" },
+          id: { type: "string", description: "Policy ID" },
+          title: { type: "string", description: "Policy title" },
+          url: { type: "string", description: "Policy URL" },
         },
       },
 
       powered_by_link: {
         type: "PoweredByLink",
-        description: "Powered by Shopify link",
+        description: "HTML link to localized shopify.com.",
         properties: {},
+      },
+
+      predictive_search: {
+        type: "PredictiveSearch",
+        description: "Results from predictive search query.",
+        properties: {
+          performed: {
+            type: "boolean",
+            description: "Whether search was performed",
+          },
+          resources: {
+            type: "predictive_search_resources",
+            description: "Search results",
+          },
+          terms: { type: "string", description: "Search terms" },
+          types: {
+            type: "array<string>",
+            description: "Resource types searched",
+          },
+        },
       },
 
       predictive_search_resources: {
         type: "PredictiveSearchResources",
-        description: "Predictive search resources",
+        description: "Arrays of objects for each resource type from search.",
         properties: {
-          queries: { type: "array<object>", description: "Search queries" },
+          articles: { type: "array<article>", description: "Article results" },
           collections: {
             type: "array<collection>",
-            description: "Collections",
+            description: "Collection results",
           },
-          pages: { type: "array<page>", description: "Pages" },
-          articles: { type: "array<article>", description: "Articles" },
-          products: { type: "array<product>", description: "Products" },
+          pages: { type: "array<page>", description: "Page results" },
+          products: { type: "array<product>", description: "Product results" },
+        },
+      },
+
+      product: {
+        type: "Product",
+        description: "A product in the store.",
+        properties: {
+          available: {
+            type: "boolean",
+            description: "Whether product is available",
+          },
+          category: {
+            type: "taxonomy_category",
+            description: "Product category",
+          },
+          collections: {
+            type: "array<collection>",
+            description: "Product collections",
+          },
+          compare_at_price: { type: "number", description: "Compare at price" },
+          compare_at_price_max: {
+            type: "number",
+            description: "Highest compare price",
+          },
+          compare_at_price_min: {
+            type: "number",
+            description: "Lowest compare price",
+          },
+          compare_at_price_varies: {
+            type: "boolean",
+            description: "Whether compare price varies",
+          },
+          content: { type: "string", description: "Product description HTML" },
+          created_at: { type: "string", description: "Creation timestamp" },
+          description: { type: "string", description: "Product description" },
+          featured_image: { type: "image", description: "Featured image" },
+          featured_media: { type: "media", description: "Featured media" },
+          first_available_variant: {
+            type: "variant",
+            description: "First available variant",
+          },
+          gift_card: {
+            type: "boolean",
+            description: "Whether product is gift card",
+          },
+          handle: { type: "string", description: "Product handle" },
+          has_only_default_variant: {
+            type: "boolean",
+            description: "Whether has only default variant",
+          },
+          id: { type: "number", description: "Product ID" },
+          images: { type: "array<image>", description: "Product images" },
+          media: { type: "array<media>", description: "Product media" },
+          metafields: {
+            type: "metafields",
+            description: "Associated metafields",
+          },
+          options: { type: "array<string>", description: "Option names" },
+          options_by_name: { type: "object", description: "Options by name" },
+          options_with_values: {
+            type: "array<product_option>",
+            description: "Options with values",
+          },
+          price: { type: "number", description: "Product price" },
+          price_max: { type: "number", description: "Highest price" },
+          price_min: { type: "number", description: "Lowest price" },
+          price_varies: {
+            type: "boolean",
+            description: "Whether price varies",
+          },
+          published_at: {
+            type: "string",
+            description: "Publication timestamp",
+          },
+          quantity_price_breaks_configured: {
+            type: "boolean",
+            description: "Whether quantity breaks configured",
+          },
+          requires_selling_plan: {
+            type: "boolean",
+            description: "Whether requires selling plan",
+          },
+          selected_or_first_available_selling_plan_allocation: {
+            type: "selling_plan_allocation",
+            description: "Selected/first selling plan",
+          },
+          selected_or_first_available_variant: {
+            type: "variant",
+            description: "Selected/first variant",
+          },
+          selected_selling_plan: {
+            type: "selling_plan",
+            description: "Selected selling plan",
+          },
+          selected_selling_plan_allocation: {
+            type: "selling_plan_allocation",
+            description: "Selected selling plan allocation",
+          },
+          selected_variant: {
+            type: "variant",
+            description: "Selected variant",
+          },
+          selling_plan_groups: {
+            type: "array<selling_plan_group>",
+            description: "Selling plan groups",
+          },
+          tags: { type: "array<string>", description: "Product tags" },
+          template_suffix: { type: "string", description: "Template suffix" },
+          title: { type: "string", description: "Product title" },
+          type: { type: "string", description: "Product type" },
+          url: { type: "string", description: "Product URL" },
+          variants: { type: "array<variant>", description: "Product variants" },
+          variants_count: { type: "number", description: "Number of variants" },
+          vendor: { type: "string", description: "Product vendor" },
         },
       },
 
       product_option: {
         type: "ProductOption",
-        description: "Product option (same as option)",
+        description: "A product option like size or color.",
         properties: {
           name: { type: "string", description: "Option name" },
           position: { type: "number", description: "Option position" },
-          values: { type: "array<string>", description: "Option values" },
-          selected_value: {
-            type: "string",
-            description: "Currently selected value",
+          selected_value: { type: "string", description: "Selected value" },
+          values: {
+            type: "array<product_option_value>",
+            description: "Option values",
           },
         },
       },
 
       product_option_value: {
         type: "ProductOptionValue",
-        description: "Product option value",
+        description: 'A product option value like "red" for color.',
         properties: {
-          option_name: { type: "string", description: "Option name" },
+          available: {
+            type: "boolean",
+            description: "Whether value is available",
+          },
+          id: { type: "number", description: "Value ID" },
           name: { type: "string", description: "Value name" },
-          swatch: { type: "swatch", description: "Color swatch" },
+          product_url: {
+            type: "string",
+            description: "Product URL with this value",
+          },
+          selected: {
+            type: "boolean",
+            description: "Whether value is selected",
+          },
+          swatch: { type: "swatch", description: "Color/image swatch" },
+          variant: { type: "variant", description: "Associated variant" },
         },
       },
 
       quantity_price_break: {
         type: "QuantityPriceBreak",
-        description: "Quantity price break for bulk pricing",
+        description: "Per-unit price when purchasing minimum quantity or more.",
         properties: {
-          minimum_quantity: { type: "number", description: "Minimum quantity" },
-          price: { type: "money", description: "Price at this quantity" },
+          minimum_quantity: {
+            type: "number",
+            description: "Minimum quantity required",
+          },
+          price: { type: "number", description: "Price per unit" },
         },
       },
 
       quantity_rule: {
         type: "QuantityRule",
-        description: "Quantity rule for products",
+        description: "Variant order quantity rule.",
         properties: {
-          min: { type: "number", description: "Minimum quantity" },
-          max: { type: "number", description: "Maximum quantity" },
           increment: { type: "number", description: "Quantity increment" },
+          max: { type: "number", description: "Maximum quantity" },
+          min: { type: "number", description: "Minimum quantity" },
         },
       },
 
       rating: {
         type: "Rating",
-        description: "Product rating",
+        description: "Information for rating type metafield.",
         properties: {
-          count: { type: "number", description: "Number of ratings" },
-          value: { type: "number", description: "Rating value" },
+          rating: { type: "number", description: "Rating value" },
+          scale_max: { type: "number", description: "Maximum scale value" },
+          scale_min: { type: "number", description: "Minimum scale value" },
         },
       },
 
       recipient: {
         type: "Recipient",
-        description: "Gift card recipient",
+        description: "Recipient associated with gift card.",
         properties: {
           email: { type: "string", description: "Recipient email" },
           name: { type: "string", description: "Recipient name" },
+          nickname: { type: "string", description: "Recipient nickname" },
+        },
+      },
+
+      recommendations: {
+        type: "Recommendations",
+        description:
+          "Product recommendations based on sales data and relationships.",
+        properties: {
+          intent: { type: "string", description: "Recommendation intent" },
+          performed: {
+            type: "boolean",
+            description: "Whether recommendations performed",
+          },
+          products: {
+            type: "array<product>",
+            description: "Recommended products",
+          },
+          products_count: { type: "number", description: "Number of products" },
+        },
+      },
+
+      request: {
+        type: "Request",
+        description: "Information about current URL and page.",
+        properties: {
+          design_mode: {
+            type: "boolean",
+            description: "Whether in design mode",
+          },
+          host: { type: "string", description: "Request host" },
+          locale: { type: "shop_locale", description: "Current locale" },
+          origin: { type: "string", description: "Request origin" },
+          page_type: { type: "string", description: "Current page type" },
+          path: { type: "string", description: "Request path" },
+          visual_preview_mode: {
+            type: "boolean",
+            description: "Whether in visual preview",
+          },
         },
       },
 
       robots: {
         type: "Robots",
-        description: "Robots meta tag content",
-        properties: {},
+        description: "Default rule groups for robots.txt file.",
+        properties: {
+          default_groups: {
+            type: "array<group>",
+            description: "Default robot groups",
+          },
+        },
+      },
+
+      routes: {
+        type: "Routes",
+        description: "Generate standard URLs for storefront.",
+        properties: {
+          account_addresses_url: {
+            type: "string",
+            description: "Account addresses URL",
+          },
+          account_login_url: { type: "string", description: "Login URL" },
+          account_logout_url: { type: "string", description: "Logout URL" },
+          account_recover_url: {
+            type: "string",
+            description: "Password recovery URL",
+          },
+          account_register_url: {
+            type: "string",
+            description: "Registration URL",
+          },
+          account_url: { type: "string", description: "Account URL" },
+          all_products_collection_url: {
+            type: "string",
+            description: "All products URL",
+          },
+          cart_add_url: { type: "string", description: "Cart add URL" },
+          cart_change_url: { type: "string", description: "Cart change URL" },
+          cart_clear_url: { type: "string", description: "Cart clear URL" },
+          cart_update_url: { type: "string", description: "Cart update URL" },
+          cart_url: { type: "string", description: "Cart URL" },
+          collections_url: { type: "string", description: "Collections URL" },
+          predictive_search_url: {
+            type: "string",
+            description: "Predictive search URL",
+          },
+          product_recommendations_url: {
+            type: "string",
+            description: "Product recommendations URL",
+          },
+          root_url: { type: "string", description: "Root URL" },
+          search_url: { type: "string", description: "Search URL" },
+          storefront_login_url: {
+            type: "string",
+            description: "Storefront login URL",
+          },
+        },
       },
 
       rule: {
         type: "Rule",
-        description: "Collection or discount rule",
+        description: "A rule for robots.txt file.",
         properties: {
-          column: { type: "string", description: "Rule column" },
-          relation: { type: "string", description: "Rule relation" },
-          condition: { type: "string", description: "Rule condition" },
+          directive: {
+            type: "string",
+            description: "Rule directive (Allow/Disallow)",
+          },
+          value: { type: "string", description: "URL path value" },
         },
       },
 
       script: {
         type: "Script",
-        description: "JavaScript script",
+        description:
+          "Information about Shopify Script. Scripts will be sunset August 28, 2025.",
+        deprecated: true,
         properties: {
-          id: { type: "string", description: "Script ID" },
-          display_scope: { type: "string", description: "Display scope" },
-          src: { type: "string", description: "Script source" },
+          id: { type: "number", description: "Script ID" },
+          name: { type: "string", description: "Script name" },
         },
       },
 
       scripts: {
         type: "Scripts",
-        description: "Collection of scripts",
+        description:
+          "Active scripts of each type. Scripts will be sunset August 28, 2025.",
+        deprecated: true,
         properties: {
-          checkout: { type: "array<script>", description: "Checkout scripts" },
-          order_status: {
-            type: "array<script>",
-            description: "Order status scripts",
+          cart_calculate_line_items: {
+            type: "script",
+            description: "Cart calculation script",
           },
+        },
+      },
+
+      search: {
+        type: "Search",
+        description: "Information about storefront search query.",
+        properties: {
+          default_sort_by: {
+            type: "string",
+            description: "Default sort order",
+          },
+          filters: { type: "array<filter>", description: "Available filters" },
+          performed: {
+            type: "boolean",
+            description: "Whether search was performed",
+          },
+          results: { type: "any", description: "Search results" },
+          results_count: { type: "number", description: "Number of results" },
+          sort_by: { type: "any", description: "Current sort order" },
+          sort_options: {
+            type: "array<sort_option>",
+            description: "Available sort options",
+          },
+          terms: { type: "string", description: "Search terms" },
+          types: {
+            type: "array<string>",
+            description: "Resource types searched",
+          },
+        },
+      },
+
+      section: {
+        type: "Section",
+        description: "Properties and settings of a section.",
+        properties: {
+          blocks: { type: "array<block>", description: "Section blocks" },
+          id: { type: "string", description: "Section ID" },
+          index: { type: "number", description: "Section index (1-based)" },
+          index0: { type: "number", description: "Section index (0-based)" },
+          location: { type: "string", description: "Section location" },
+          settings: { type: "any", description: "Section settings" },
         },
       },
 
       selling_plan: {
         type: "SellingPlan",
-        description: "Subscription selling plan",
+        description: "Information about selling plan intent.",
         properties: {
-          id: { type: "string", description: "Selling plan ID" },
-          name: { type: "string", description: "Selling plan name" },
-          description: {
-            type: "string",
-            description: "Selling plan description",
+          checkout_charge: {
+            type: "selling_plan_checkout_charge",
+            description: "Checkout charge info",
           },
+          description: { type: "string", description: "Plan description" },
+          group_id: { type: "string", description: "Group ID" },
+          id: { type: "number", description: "Plan ID" },
+          name: { type: "string", description: "Plan name" },
           options: {
             type: "array<selling_plan_option>",
-            description: "Selling plan options",
+            description: "Plan options",
           },
           price_adjustments: {
             type: "array<selling_plan_price_adjustment>",
             description: "Price adjustments",
           },
-          checkout_charge: {
-            type: "selling_plan_checkout_charge",
-            description: "Checkout charge",
+          recurring_deliveries: {
+            type: "boolean",
+            description: "Whether recurring deliveries",
+          },
+          selected: {
+            type: "boolean",
+            description: "Whether plan is selected",
           },
         },
       },
 
       selling_plan_allocation: {
         type: "SellingPlanAllocation",
-        description: "Selling plan allocation",
+        description: "How selling plan affects line item.",
         properties: {
-          selling_plan: {
-            type: "selling_plan",
-            description: "Associated selling plan",
+          checkout_charge_amount: {
+            type: "number",
+            description: "Checkout charge amount",
           },
+          compare_at_price: { type: "number", description: "Compare at price" },
+          per_delivery_price: {
+            type: "number",
+            description: "Price per delivery",
+          },
+          price: { type: "number", description: "Allocated price" },
           price_adjustments: {
             type: "array<selling_plan_allocation_price_adjustment>",
             description: "Price adjustments",
           },
-          price: { type: "money", description: "Allocation price" },
-          compare_at_price: { type: "money", description: "Compare at price" },
+          remaining_balance_charge_amount: {
+            type: "number",
+            description: "Remaining balance",
+          },
+          selling_plan: {
+            type: "selling_plan",
+            description: "Associated selling plan",
+          },
+          selling_plan_group_id: { type: "string", description: "Group ID" },
+          unit_price: { type: "number", description: "Unit price" },
         },
       },
 
       selling_plan_allocation_price_adjustment: {
         type: "SellingPlanAllocationPriceAdjustment",
-        description: "Selling plan allocation price adjustment",
+        description: "Resulting price from selling plan price adjustment.",
         properties: {
           position: { type: "number", description: "Adjustment position" },
-          price: { type: "money", description: "Adjusted price" },
+          price: { type: "number", description: "Adjusted price" },
         },
       },
 
       selling_plan_checkout_charge: {
         type: "SellingPlanCheckoutCharge",
-        description: "Selling plan checkout charge",
+        description: "How selling plan affects checkout amount.",
         properties: {
-          type: { type: "string", description: "Charge type" },
-          value: { type: "string", description: "Charge value" },
+          value: { type: "number", description: "Charge value" },
           value_type: { type: "string", description: "Value type" },
         },
       },
 
       selling_plan_group: {
         type: "SellingPlanGroup",
-        description: "Group of selling plans",
+        description: "Group of selling plans for product variants.",
         properties: {
-          id: { type: "string", description: "Group ID" },
+          app_id: { type: "string", description: "App ID" },
+          id: { type: "number", description: "Group ID" },
           name: { type: "string", description: "Group name" },
           options: {
             type: "array<selling_plan_group_option>",
             description: "Group options",
+          },
+          selling_plan_selected: {
+            type: "boolean",
+            description: "Whether plan selected",
           },
           selling_plans: {
             type: "array<selling_plan>",
@@ -2036,17 +2141,18 @@ export class ShopifyObjectRegistry {
 
       selling_plan_group_option: {
         type: "SellingPlanGroupOption",
-        description: "Selling plan group option",
+        description: "Option in selling plan group.",
         properties: {
           name: { type: "string", description: "Option name" },
           position: { type: "number", description: "Option position" },
-          values: { type: "array<string>", description: "Option values" },
+          selected_value: { type: "string", description: "Selected value" },
+          values: { type: "array<string>", description: "Available values" },
         },
       },
 
       selling_plan_option: {
         type: "SellingPlanOption",
-        description: "Selling plan option",
+        description: "Selling plan's value for group option.",
         properties: {
           name: { type: "string", description: "Option name" },
           position: { type: "number", description: "Option position" },
@@ -2056,52 +2162,152 @@ export class ShopifyObjectRegistry {
 
       selling_plan_price_adjustment: {
         type: "SellingPlanPriceAdjustment",
-        description: "Selling plan price adjustment",
+        description: "How selling plan changes variant price over time.",
         properties: {
           order_count: { type: "number", description: "Order count" },
           position: { type: "number", description: "Adjustment position" },
-          value: { type: "string", description: "Adjustment value" },
+          value: { type: "number", description: "Adjustment value" },
           value_type: { type: "string", description: "Value type" },
+        },
+      },
+
+      settings: {
+        type: "Settings",
+        description: "Access all theme settings from settings_schema.json.",
+        properties: {},
+      },
+
+      shipping_method: {
+        type: "ShippingMethod",
+        description: "Shipping method information for order.",
+        properties: {
+          discount_allocations: {
+            type: "array<discount_allocation>",
+            description: "Shipping discounts",
+          },
+          handle: { type: "string", description: "Method handle" },
+          id: { type: "string", description: "Method ID" },
+          original_price: { type: "number", description: "Original price" },
+          price_with_discounts: {
+            type: "number",
+            description: "Price after discounts",
+          },
+          tax_lines: {
+            type: "array<tax_line>",
+            description: "Tax information",
+          },
+          title: { type: "string", description: "Method title" },
+        },
+      },
+
+      shop: {
+        type: "Shop",
+        description: "Information about the store.",
+        properties: {
+          accepts_gift_cards: {
+            type: "boolean",
+            description: "Whether accepts gift cards",
+          },
+          address: { type: "address", description: "Store address" },
+          brand: { type: "brand", description: "Store brand" },
+          collections_count: {
+            type: "number",
+            description: "Number of collections",
+          },
+          currency: { type: "string", description: "Store currency" },
+          customer_accounts_enabled: {
+            type: "boolean",
+            description: "Whether customer accounts enabled",
+          },
+          customer_accounts_optional: {
+            type: "boolean",
+            description: "Whether accounts optional",
+          },
+          description: { type: "string", description: "Store description" },
+          domain: { type: "string", description: "Store domain" },
+          email: { type: "string", description: "Store email" },
+          enabled_currencies: {
+            type: "array<currency>",
+            description: "Enabled currencies",
+          },
+          enabled_payment_types: {
+            type: "array<string>",
+            description: "Enabled payment types",
+          },
+          id: { type: "string", description: "Store ID" },
+          metafields: { type: "metafields", description: "Store metafields" },
+          money_format: { type: "currency", description: "Money format" },
+          money_with_currency_format: {
+            type: "currency",
+            description: "Money with currency format",
+          },
+          name: { type: "string", description: "Store name" },
+          password_message: {
+            type: "string",
+            description: "Password page message",
+          },
+          permanent_domain: { type: "string", description: "Permanent domain" },
+          phone: { type: "string", description: "Store phone" },
+          policies: { type: "array<policy>", description: "Store policies" },
+          privacy_policy: { type: "policy", description: "Privacy policy" },
+          products_count: { type: "number", description: "Number of products" },
+          published_locales: {
+            type: "array<shop_locale>",
+            description: "Published locales",
+          },
+          refund_policy: { type: "policy", description: "Refund policy" },
+          secure_url: { type: "string", description: "Secure URL" },
+          shipping_policy: { type: "policy", description: "Shipping policy" },
+          subscription_policy: {
+            type: "policy",
+            description: "Subscription policy",
+          },
+          terms_of_service: { type: "policy", description: "Terms of service" },
+          types: { type: "array<string>", description: "Product types" },
+          url: { type: "string", description: "Store URL" },
+          vendors: { type: "array<string>", description: "Product vendors" },
         },
       },
 
       shop_locale: {
         type: "ShopLocale",
-        description: "Shop locale information",
+        description: "A language in store.",
         properties: {
-          name: { type: "string", description: "Locale name" },
-          root_url: { type: "string", description: "Root URL" },
-          endonym_name: { type: "string", description: "Endonym name" },
+          endonym_name: { type: "string", description: "Native language name" },
+          iso_code: { type: "string", description: "ISO language code" },
+          name: { type: "string", description: "Language name" },
+          primary: { type: "boolean", description: "Whether primary language" },
+          root_url: { type: "string", description: "Root URL for language" },
         },
       },
 
       sitemap: {
         type: "Sitemap",
-        description: "Sitemap information",
-        properties: {},
+        description: "Sitemap for robots.txt group.",
+        properties: {
+          directive: { type: "string", description: "Sitemap directive" },
+          value: { type: "string", description: "Sitemap URL" },
+        },
       },
 
       sort_option: {
         type: "SortOption",
-        description: "Collection sort option",
+        description: "Sort option for collection or search.",
         properties: {
-          name: { type: "string", description: "Sort option name" },
-          value: { type: "string", description: "Sort option value" },
+          name: { type: "string", description: "Option name" },
+          value: { type: "string", description: "Option value" },
         },
       },
 
       store_availability: {
         type: "StoreAvailability",
-        description: "Store availability information",
+        description: "Variant inventory for physical store location.",
         properties: {
-          available: {
-            type: "boolean",
-            description: "Whether available in store",
-          },
+          available: { type: "boolean", description: "Whether available" },
           location: { type: "location", description: "Store location" },
           pick_up_enabled: {
             type: "boolean",
-            description: "Whether pickup is enabled",
+            description: "Whether pickup enabled",
           },
           pick_up_time: { type: "string", description: "Pickup time" },
         },
@@ -2109,16 +2315,15 @@ export class ShopifyObjectRegistry {
 
       store_credit_account: {
         type: "StoreCreditAccount",
-        description: "Store credit account",
+        description: "Store credit account owned by customer.",
         properties: {
-          id: { type: "string", description: "Account ID" },
           balance: { type: "money", description: "Account balance" },
         },
       },
 
       swatch: {
         type: "Swatch",
-        description: "Color swatch",
+        description: "Color and image for visual representation.",
         properties: {
           color: { type: "color", description: "Swatch color" },
           image: { type: "image", description: "Swatch image" },
@@ -2127,55 +2332,143 @@ export class ShopifyObjectRegistry {
 
       tablerowloop: {
         type: "TableRowLoop",
-        description: "Table row loop (same as tablerow)",
+        description: "Information about parent tablerow loop.",
         properties: {
-          col: { type: "number", description: "Current column" },
-          col0: { type: "number", description: "Current column (0-indexed)" },
+          col: { type: "number", description: "Current column (1-based)" },
+          col0: { type: "number", description: "Current column (0-based)" },
           col_first: { type: "boolean", description: "Whether first column" },
           col_last: { type: "boolean", description: "Whether last column" },
           first: { type: "boolean", description: "Whether first row" },
-          index: { type: "number", description: "Current index" },
-          index0: { type: "number", description: "Current index (0-indexed)" },
+          index: { type: "number", description: "Current iteration (1-based)" },
+          index0: {
+            type: "number",
+            description: "Current iteration (0-based)",
+          },
           last: { type: "boolean", description: "Whether last row" },
-          length: { type: "number", description: "Total number of rows" },
-          rindex: { type: "number", description: "Reverse index" },
-          rindex0: { type: "number", description: "Reverse index (0-indexed)" },
+          length: { type: "number", description: "Total iterations" },
+          rindex: { type: "number", description: "Reverse index (1-based)" },
+          rindex0: { type: "number", description: "Reverse index (0-based)" },
+          row: { type: "number", description: "Current row" },
+        },
+      },
+
+      tax_line: {
+        type: "TaxLine",
+        description: "Tax line information for checkout or order.",
+        properties: {
+          price: { type: "number", description: "Tax amount" },
+          rate: { type: "number", description: "Tax rate (decimal)" },
+          rate_percentage: {
+            type: "number",
+            description: "Tax rate percentage",
+          },
+          title: { type: "string", description: "Tax name" },
         },
       },
 
       taxonomy_category: {
         type: "TaxonomyCategory",
-        description: "Product taxonomy category",
+        description: "Taxonomy category for product.",
         properties: {
+          ancestors: {
+            type: "array<taxonomy_category>",
+            description: "Category ancestors",
+          },
+          gid: { type: "string", description: "Global ID" },
           id: { type: "string", description: "Category ID" },
           name: { type: "string", description: "Category name" },
-          full_name: { type: "string", description: "Full category name" },
+        },
+      },
+
+      template: {
+        type: "Template",
+        description: "Information about current template.",
+        properties: {
+          directory: { type: "string", description: "Template directory" },
+          name: { type: "string", description: "Template name" },
+          suffix: { type: "string", description: "Template suffix" },
+        },
+      },
+
+      theme: {
+        type: "Theme",
+        description:
+          "Information about current theme. Deprecated because values are subject to change.",
+        deprecated: true,
+        properties: {
+          id: { type: "number", description: "Theme ID" },
+          name: { type: "string", description: "Theme name" },
+          role: { type: "string", description: "Theme role" },
+        },
+      },
+
+      transaction: {
+        type: "Transaction",
+        description: "Transaction associated with checkout or order.",
+        properties: {
+          amount: { type: "number", description: "Transaction amount" },
+          buyer_pending_payment_instructions: {
+            type: "array<pending_payment_instruction_input>",
+            description: "Payment instructions",
+          },
+          buyer_pending_payment_notice: {
+            type: "string",
+            description: "Payment notice",
+          },
+          created_at: { type: "string", description: "Creation timestamp" },
+          gateway: { type: "string", description: "Payment gateway" },
+          gateway_display_name: {
+            type: "string",
+            description: "Gateway display name",
+          },
+          id: { type: "number", description: "Transaction ID" },
+          kind: { type: "string", description: "Transaction kind" },
+          name: { type: "string", description: "Transaction name" },
+          payment_details: {
+            type: "transaction_payment_details",
+            description: "Payment details",
+          },
+          receipt: { type: "string", description: "Receipt information" },
+          show_buyer_pending_payment_instructions: {
+            type: "boolean",
+            description: "Whether to show instructions",
+          },
+          status: { type: "string", description: "Transaction status" },
+          status_label: { type: "string", description: "Status label" },
         },
       },
 
       transaction_payment_details: {
         type: "TransactionPaymentDetails",
-        description: "Transaction payment details",
+        description: "Payment method information for transaction.",
         properties: {
-          credit_card_bin: { type: "string", description: "Credit card BIN" },
-          avs_result_code: { type: "string", description: "AVS result code" },
-          cvv_result_code: { type: "string", description: "CVV result code" },
-          credit_card_number: {
-            type: "string",
-            description: "Masked credit card number",
-          },
           credit_card_company: {
             type: "string",
             description: "Credit card company",
+          },
+          credit_card_last_four_digits: {
+            type: "string",
+            description: "Last 4 digits",
+          },
+          credit_card_number: {
+            type: "string",
+            description: "Masked card number",
+          },
+          gift_card: {
+            type: "gift_card",
+            description: "Gift card information",
           },
         },
       },
 
       unit_price_measurement: {
         type: "UnitPriceMeasurement",
-        description: "Unit price measurement",
+        description: "How product variant units are measured for unit pricing.",
         properties: {
-          measured_type: { type: "string", description: "Measured type" },
+          measured_type: {
+            type: "string",
+            description: "What is being measured",
+          },
           quantity_unit: { type: "string", description: "Quantity unit" },
           quantity_value: { type: "number", description: "Quantity value" },
           reference_unit: { type: "string", description: "Reference unit" },
@@ -2183,15 +2476,153 @@ export class ShopifyObjectRegistry {
         },
       },
 
+      user: {
+        type: "User",
+        description: "Author of blog article.",
+        properties: {
+          account_owner: {
+            type: "boolean",
+            description: "Whether account owner",
+          },
+          bio: { type: "string", description: "User bio" },
+          email: { type: "string", description: "User email" },
+          first_name: { type: "string", description: "First name" },
+          homepage: { type: "string", description: "Homepage URL" },
+          image: { type: "image", description: "User image" },
+          last_name: { type: "string", description: "Last name" },
+          name: { type: "string", description: "Full name" },
+        },
+      },
+
       user_agent: {
         type: "UserAgent",
-        description: "User agent information",
-        properties: {},
+        description: "User agent for robots.txt group.",
+        properties: {
+          directive: { type: "string", description: "User-agent directive" },
+          value: { type: "string", description: "User agent value" },
+        },
+      },
+
+      variant: {
+        type: "Variant",
+        description: "A product variant.",
+        properties: {
+          available: {
+            type: "boolean",
+            description: "Whether variant is available",
+          },
+          barcode: { type: "string", description: "Variant barcode" },
+          compare_at_price: { type: "number", description: "Compare at price" },
+          featured_image: { type: "image", description: "Featured image" },
+          featured_media: { type: "media", description: "Featured media" },
+          id: { type: "number", description: "Variant ID" },
+          image: { type: "image", description: "Variant image" },
+          incoming: {
+            type: "boolean",
+            description: "Whether inventory is incoming",
+          },
+          inventory_management: {
+            type: "string",
+            description: "Inventory management",
+          },
+          inventory_policy: { type: "string", description: "Inventory policy" },
+          inventory_quantity: {
+            type: "number",
+            description: "Available quantity",
+          },
+          matched: {
+            type: "boolean",
+            description: "Whether variant matches current selection",
+          },
+          metafields: {
+            type: "metafields",
+            description: "Associated metafields",
+          },
+          next_incoming_date: {
+            type: "string",
+            description: "Next incoming inventory date",
+          },
+          options: {
+            type: "product_option_value",
+            description: "Variant options",
+          },
+          price: { type: "number", description: "Variant price" },
+          product: { type: "product", description: "Parent product" },
+          quantity_price_breaks: {
+            type: "array<quantity_price_break>",
+            description: "Quantity price breaks",
+          },
+          quantity_price_breaks_configured: {
+            type: "boolean",
+            description: "Whether quantity breaks configured",
+          },
+          quantity_rule: {
+            type: "quantity_rule",
+            description: "Quantity rule",
+          },
+          requires_selling_plan: {
+            type: "boolean",
+            description: "Whether requires selling plan",
+          },
+          requires_shipping: {
+            type: "boolean",
+            description: "Whether requires shipping",
+          },
+          selected: {
+            type: "boolean",
+            description: "Whether variant is selected",
+          },
+          selected_selling_plan_allocation: {
+            type: "selling_plan_allocation",
+            description: "Selected selling plan",
+          },
+          selling_plan_allocations: {
+            type: "array<selling_plan_allocation>",
+            description: "Selling plan allocations",
+          },
+          sku: { type: "string", description: "SKU" },
+          store_availabilities: {
+            type: "array<store_availability>",
+            description: "Store availability",
+          },
+          taxable: { type: "boolean", description: "Whether taxable" },
+          title: { type: "string", description: "Variant title" },
+          unit_price: { type: "number", description: "Unit price" },
+          unit_price_measurement: {
+            type: "unit_price_measurement",
+            description: "Unit measurement",
+          },
+          url: { type: "string", description: "Variant URL" },
+          weight: { type: "number", description: "Weight" },
+          weight_in_unit: {
+            type: "number",
+            description: "Weight in specified unit",
+          },
+          weight_unit: { type: "string", description: "Weight unit" },
+        },
+      },
+
+      video: {
+        type: "Video",
+        description: "Video uploaded as product media or metafield.",
+        properties: {
+          alt: { type: "string", description: "Alt text" },
+          aspect_ratio: { type: "number", description: "Video aspect ratio" },
+          duration: { type: "number", description: "Video duration" },
+          id: { type: "number", description: "Video ID" },
+          media_type: { type: "string", description: "Media type" },
+          position: { type: "number", description: "Position in array" },
+          preview_image: { type: "image", description: "Preview image" },
+          sources: {
+            type: "array<video_source>",
+            description: "Video sources",
+          },
+        },
       },
 
       video_source: {
         type: "VideoSource",
-        description: "Video source",
+        description: "Source files for video.",
         properties: {
           format: { type: "string", description: "Video format" },
           height: { type: "number", description: "Video height" },
