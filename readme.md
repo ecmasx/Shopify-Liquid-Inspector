@@ -291,13 +291,6 @@ This extension is designed to **complement** the official [Shopify Liquid](https
   - Official extension provides syntax highlighting and basic validation
   - Liquid Inspector adds deep object inspection and property details
 
-### 📋 Recommended Setup
-
-Install **both extensions** for the best Shopify development experience:
-
-1. **Shopify Liquid** (Official) - Syntax highlighting, snippets, Theme Check
-2. **Shopify Liquid Inspector** (This extension) - Object inspection, property validation
-
 ### ⚡ Enhanced Workflow
 
 ```liquid
@@ -308,19 +301,6 @@ Install **both extensions** for the best Shopify development experience:
 ```
 
 Both extensions complement each other to provide a complete Shopify Liquid development environment.
-
-## Known Issues
-
-- Large objects may take a moment to load all properties
-- Some deprecated warnings may appear for legacy themes (this is intentional)
-
-## Roadmap
-
-- 🔄 **Autocomplete improvements** with fuzzy matching
-- 🎯 **Template-specific suggestions** (product vs collection templates)
-- 📚 **Inline documentation** with Shopify docs links
-- 🔍 **Go to definition** for custom objects
-- 🛠️ **Refactoring tools** for deprecated object migration
 
 ## License
 
