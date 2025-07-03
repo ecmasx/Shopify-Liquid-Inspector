@@ -1,13 +1,16 @@
 import * as vscode from "vscode";
 import { ShopifyObjectRegistry } from "../schemas/shopifyObjects";
+import { ShopifyFilterRegistry } from "../schemas/shopifyFilters";
 import { LiquidParser } from "../parsers/liquidParser";
 
 export class LiquidHoverProvider implements vscode.HoverProvider {
   private registry: ShopifyObjectRegistry;
+  private filterRegistry: ShopifyFilterRegistry;
   private parser: LiquidParser;
 
   constructor() {
     this.registry = new ShopifyObjectRegistry();
+    this.filterRegistry = new ShopifyFilterRegistry();
     this.parser = new LiquidParser();
   }
 
@@ -22,6 +25,27 @@ export class LiquidHoverProvider implements vscode.HoverProvider {
     }
 
     const line = document.lineAt(position.line);
+
+    // First check if we're hovering over a filter
+    if (config.get("enableFilterHover", true)) {
+      const filter = this.parser.getFilterAtPosition(
+        line.text,
+        position.character
+      );
+      if (filter) {
+        const filterInfo = this.filterRegistry.getFilter(filter.name);
+        if (filterInfo) {
+          const markdown = this.createFilterHoverContent(
+            filter,
+            filterInfo,
+            config
+          );
+          return new vscode.Hover(markdown, filter.range);
+        }
+      }
+    }
+
+    // If not a filter, check for variables (existing logic)
     const variable = this.parser.getVariableAtPosition(
       line.text,
       position.character
@@ -36,12 +60,101 @@ export class LiquidHoverProvider implements vscode.HoverProvider {
       return null;
     }
 
-    const markdown = this.createHoverContent(variable, objectInfo, config);
+    const markdown = this.createVariableHoverContent(
+      variable,
+      objectInfo,
+      config
+    );
 
     return new vscode.Hover(markdown, variable.range);
   }
 
-  private createHoverContent(
+  private createFilterHoverContent(
+    filter: any,
+    filterInfo: any,
+    config: vscode.WorkspaceConfiguration
+  ): vscode.MarkdownString {
+    const md = new vscode.MarkdownString();
+    md.isTrusted = true;
+    md.supportHtml = true;
+
+    // Filter name and category
+    md.appendMarkdown(`## \`${filter.name}\` Filter\n\n`);
+    md.appendMarkdown(`**Category:** ${filterInfo.category}\n\n`);
+
+    // Show description
+    if (config.get("showDescription", true) && filterInfo.description) {
+      md.appendMarkdown(`*${filterInfo.description}*\n\n`);
+    }
+
+    // Show return type
+    if (config.get("showTypes", true) && filterInfo.returnType) {
+      md.appendMarkdown(`**Returns:** \`${filterInfo.returnType}\`\n\n`);
+    }
+
+    // Show syntax
+    if (filterInfo.syntax) {
+      md.appendMarkdown(`**Syntax:** \`${filterInfo.syntax}\`\n\n`);
+    }
+
+    // Show deprecation warning
+    if (config.get("showDeprecatedWarnings", true) && filterInfo.deprecated) {
+      md.appendMarkdown(
+        `⚠️ **Deprecated:** This filter is deprecated and should be avoided.\n\n`
+      );
+    }
+
+    // Show parameters if any
+    if (
+      config.get("showFilterParameters", true) &&
+      filterInfo.parameters &&
+      Object.keys(filterInfo.parameters).length > 0
+    ) {
+      md.appendMarkdown("---\n\n");
+      md.appendMarkdown("### Parameters\n\n");
+
+      md.appendMarkdown("| Parameter | Type | Description | Default |\n");
+      md.appendMarkdown("|-----------|------|-------------|--------|\n");
+
+      Object.entries(filterInfo.parameters).forEach(
+        ([name, param]: [string, any]) => {
+          const type = param.type || "string";
+          const description = param.description || "";
+          const defaultValue = param.default ? `\`${param.default}\`` : "";
+          md.appendMarkdown(
+            `| \`${name}\` | \`${type}\` | ${description} | ${defaultValue} |\n`
+          );
+        }
+      );
+    }
+
+    // Show current filter parameters if any
+    if (filter.parameters && filter.parameters.length > 0) {
+      md.appendMarkdown("---\n\n");
+      md.appendMarkdown("### Current Parameters\n\n");
+      filter.parameters.forEach((param: string, index: number) => {
+        md.appendMarkdown(`${index + 1}. \`${param}\`\n`);
+      });
+      md.appendMarkdown("\n");
+    }
+
+    // Show examples
+    if (
+      config.get("showFilterExamples", true) &&
+      filterInfo.examples &&
+      filterInfo.examples.length > 0
+    ) {
+      md.appendMarkdown("---\n\n");
+      md.appendMarkdown("### Examples\n\n");
+      filterInfo.examples.forEach((example: string) => {
+        md.appendMarkdown(`\`\`\`liquid\n${example}\n\`\`\`\n\n`);
+      });
+    }
+
+    return md;
+  }
+
+  private createVariableHoverContent(
     variable: any,
     objectInfo: any,
     config: vscode.WorkspaceConfiguration
@@ -60,6 +173,11 @@ export class LiquidHoverProvider implements vscode.HoverProvider {
       md.appendMarkdown(`*${objectInfo.description}*\n\n`);
     }
 
+    // Show deprecation warning for objects
+    if (config.get("showDeprecatedWarnings", true) && objectInfo.deprecated) {
+      md.appendMarkdown(`⚠️ **Deprecated:** ${objectInfo.deprecated}\n\n`);
+    }
+
     if (variable.propertyPath && variable.propertyPath.length > 0) {
       const propertyInfo = this.getPropertyInfo(
         objectInfo,
@@ -69,6 +187,12 @@ export class LiquidHoverProvider implements vscode.HoverProvider {
         md.appendMarkdown(`**Property Type:** \`${propertyInfo.type}\`\n\n`);
         if (propertyInfo.description) {
           md.appendMarkdown(`**Description:** ${propertyInfo.description}\n\n`);
+        }
+        // Show property deprecation if exists
+        if (propertyInfo.deprecated) {
+          md.appendMarkdown(
+            `⚠️ **Property Deprecated:** ${propertyInfo.deprecated}\n\n`
+          );
         }
       }
     }
@@ -95,8 +219,10 @@ export class LiquidHoverProvider implements vscode.HoverProvider {
           typeof prop === "object" && prop.description
             ? prop.description.replace(/\|/g, "\\|")
             : "";
+        const deprecatedMark =
+          typeof prop === "object" && prop.deprecated ? " ⚠️" : "";
         md.appendMarkdown(
-          `| \`${name}\` | \`${typeStr}\` | ${description} |\n`
+          `| \`${name}\`${deprecatedMark} | \`${typeStr}\` | ${description} |\n`
         );
       });
 

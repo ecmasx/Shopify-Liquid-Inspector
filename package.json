@@ -1,8 +1,8 @@
 {
   "name": "liquid-inspector",
   "displayName": "Shopify Liquid Inspector",
-  "description": "A VS Code extension for inspecting Shopify Liquid variables with hover information",
-  "version": "1.1.1",
+  "description": "A VS Code extension for inspecting Shopify Liquid objects and filters with comprehensive hover information",
+  "version": "2.0.0",
   "license": "MIT",
   "publisher": "ecmasx",
   "main": "out/extension.js",
@@ -17,7 +17,8 @@
     "liquid",
     "template",
     "hover",
-    "intellisense"
+    "intellisense",
+    "filters"
   ],
   "activationEvents": [
     "onLanguage:liquid"
@@ -47,6 +48,36 @@
           "minimum": 5,
           "maximum": 100,
           "description": "Maximum number of properties to show in hover tooltip"
+        },
+        "liquidInspector.showDeprecatedWarnings": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show warnings for deprecated objects and filters"
+        },
+        "liquidInspector.enablePropertyValidation": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable validation of object properties"
+        },
+        "liquidInspector.highlightInvalidProperties": {
+          "type": "boolean",
+          "default": true,
+          "description": "Highlight invalid properties in code"
+        },
+        "liquidInspector.enableFilterHover": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable hover information for Shopify filters"
+        },
+        "liquidInspector.showFilterExamples": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show examples in filter hover tooltips"
+        },
+        "liquidInspector.showFilterParameters": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show parameter information for filters"
         }
       }
     }
