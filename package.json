@@ -2,7 +2,7 @@
   "name": "liquid-inspector",
   "displayName": "Shopify Liquid Inspector",
   "description": "A VS Code extension for inspecting Shopify Liquid objects, filters and tags with comprehensive hover information",
-  "version": "2.0.5",
+  "version": "2.1.0",
   "license": "MIT",
   "publisher": "ecmasx",
   "main": "out/extension.js",

@@ -1,84 +1,168 @@
 import * as vscode from "vscode";
-import { ShopifyObjectRegistry } from "../schemas/shopifyObjects";
-import { ShopifyFilterRegistry } from "../schemas/shopifyFilters";
-import { LiquidParser } from "../parsers/liquidParser";
+import {
+  ShopifyObjectRegistry,
+  ShopifyObjectDefinition,
+} from "../schemas/shopifyObjects";
+import {
+  ShopifyFilterRegistry,
+  ShopifyFilterDefinition,
+} from "../schemas/shopifyFilters";
+import {
+  LiquidParser,
+  LiquidFilter,
+  LiquidVariable,
+} from "../parsers/liquidParser";
 
 export class LiquidHoverProvider implements vscode.HoverProvider {
   private registry: ShopifyObjectRegistry;
   private filterRegistry: ShopifyFilterRegistry;
   private parser: LiquidParser;
+  private hoverCache = new Map<string, vscode.Hover>();
+  private configCache: vscode.WorkspaceConfiguration | null = null;
+  private configCacheTime = 0;
+  private static readonly MAX_CACHE_SIZE = 100;
+  private static readonly CONFIG_CACHE_DURATION = 5000; // 5 seconds
 
-  constructor() {
-    this.registry = new ShopifyObjectRegistry();
-    this.filterRegistry = new ShopifyFilterRegistry();
-    this.parser = new LiquidParser();
+  constructor(
+    registry?: ShopifyObjectRegistry,
+    filterRegistry?: ShopifyFilterRegistry,
+    parser?: LiquidParser
+  ) {
+    this.registry = registry || new ShopifyObjectRegistry();
+    this.filterRegistry = filterRegistry || new ShopifyFilterRegistry();
+    this.parser = parser || new LiquidParser();
   }
 
-  provideHover(
+  private getConfig(): vscode.WorkspaceConfiguration {
+    const now = Date.now();
+    if (
+      !this.configCache ||
+      now - this.configCacheTime > LiquidHoverProvider.CONFIG_CACHE_DURATION
+    ) {
+      this.configCache = vscode.workspace.getConfiguration("liquidInspector");
+      this.configCacheTime = now;
+    }
+    return this.configCache;
+  }
+
+  private cleanupCache(): void {
+    if (this.hoverCache.size > LiquidHoverProvider.MAX_CACHE_SIZE) {
+      const entries = Array.from(this.hoverCache.entries());
+      const toDelete = entries.slice(
+        0,
+        entries.length - LiquidHoverProvider.MAX_CACHE_SIZE
+      );
+      toDelete.forEach(([key]) => this.hoverCache.delete(key));
+    }
+  }
+
+  async provideHover(
     document: vscode.TextDocument,
     position: vscode.Position,
     token: vscode.CancellationToken
-  ): vscode.ProviderResult<vscode.Hover> {
-    const config = vscode.workspace.getConfiguration("liquidInspector");
-    if (!config.get("enabled", true)) {
-      return null;
-    }
+  ): Promise<vscode.Hover | null> {
+    try {
+      if (token.isCancellationRequested) {
+        return null;
+      }
 
-    const line = document.lineAt(position.line);
+      const cacheKey = `${document.uri.toString()}:${position.line}:${
+        position.character
+      }`;
+      if (this.hoverCache.has(cacheKey)) {
+        return this.hoverCache.get(cacheKey) || null;
+      }
 
-    if (config.get("enableFilterHover", true)) {
-      const filter = this.parser.getFilterAtPosition(
+      const config = this.getConfig();
+      if (!config.get("enabled", true)) {
+        return null;
+      }
+
+      const line = document.lineAt(position.line);
+
+      if (config.get("enableFilterHover", true)) {
+        const filter = this.parser.getFilterAtPosition(
+          line.text,
+          position.character
+        );
+        if (filter) {
+          const filterInfo = this.filterRegistry.getFilter(filter.name);
+          if (filterInfo) {
+            const markdown = this.createFilterHoverContent(
+              filter,
+              filterInfo,
+              config
+            );
+            const result = new vscode.Hover(markdown, filter.range);
+            this.hoverCache.set(cacheKey, result);
+            this.cleanupCache();
+            return result;
+          }
+        }
+      }
+
+      const variable = this.parser.getVariableAtPosition(
         line.text,
         position.character
       );
-      if (filter) {
-        const filterInfo = this.filterRegistry.getFilter(filter.name);
-        if (filterInfo) {
-          const markdown = this.createFilterHoverContent(
-            filter,
-            filterInfo,
-            config
-          );
-          return new vscode.Hover(markdown, filter.range);
-        }
+
+      if (!variable) {
+        return null;
       }
-    }
 
-    const variable = this.parser.getVariableAtPosition(
-      line.text,
-      position.character
-    );
+      const objectInfo = this.registry.getObject(variable.rootName);
+      if (!objectInfo) {
+        return null;
+      }
 
-    if (!variable) {
+      const markdown = this.createVariableHoverContent(
+        variable,
+        objectInfo,
+        config
+      );
+
+      const result = new vscode.Hover(markdown, variable.range);
+      this.hoverCache.set(cacheKey, result);
+      this.cleanupCache();
+      return result;
+    } catch (error) {
+      console.error("LiquidHoverProvider error:", error);
       return null;
     }
-
-    const objectInfo = this.registry.getObject(variable.rootName);
-    if (!objectInfo) {
-      return null;
-    }
-
-    const markdown = this.createVariableHoverContent(
-      variable,
-      objectInfo,
-      config
-    );
-
-    return new vscode.Hover(markdown, variable.range);
   }
 
   private createFilterHoverContent(
-    filter: any,
-    filterInfo: any,
+    filter: LiquidFilter,
+    filterInfo: ShopifyFilterDefinition,
     config: vscode.WorkspaceConfiguration
   ): vscode.MarkdownString {
     const md = new vscode.MarkdownString();
     md.isTrusted = true;
     md.supportHtml = true;
 
+    this.addFilterHeader(md, filter, filterInfo);
+    this.addFilterDescription(md, filterInfo, config);
+    this.addFilterParameters(md, filterInfo, config);
+    this.addCurrentParameters(md, filter);
+    this.addFilterExamples(md, filterInfo, config);
+
+    return md;
+  }
+
+  private addFilterHeader(
+    md: vscode.MarkdownString,
+    filter: LiquidFilter,
+    filterInfo: ShopifyFilterDefinition
+  ): void {
     md.appendMarkdown(`## \`${filter.name}\` Filter\n\n`);
     md.appendMarkdown(`**Category:** ${filterInfo.category}\n\n`);
+  }
 
+  private addFilterDescription(
+    md: vscode.MarkdownString,
+    filterInfo: ShopifyFilterDefinition,
+    config: vscode.WorkspaceConfiguration
+  ): void {
     if (config.get("showDescription", true) && filterInfo.description) {
       md.appendMarkdown(`*${filterInfo.description}*\n\n`);
     }
@@ -96,7 +180,13 @@ export class LiquidHoverProvider implements vscode.HoverProvider {
         `⚠️ **Deprecated:** This filter is deprecated and should be avoided.\n\n`
       );
     }
+  }
 
+  private addFilterParameters(
+    md: vscode.MarkdownString,
+    filterInfo: ShopifyFilterDefinition,
+    config: vscode.WorkspaceConfiguration
+  ): void {
     if (
       config.get("showFilterParameters", true) &&
       filterInfo.parameters &&
@@ -119,7 +209,12 @@ export class LiquidHoverProvider implements vscode.HoverProvider {
         }
       );
     }
+  }
 
+  private addCurrentParameters(
+    md: vscode.MarkdownString,
+    filter: LiquidFilter
+  ): void {
     if (filter.parameters && filter.parameters.length > 0) {
       md.appendMarkdown("---\n\n");
       md.appendMarkdown("### Current Parameters\n\n");
@@ -128,7 +223,13 @@ export class LiquidHoverProvider implements vscode.HoverProvider {
       });
       md.appendMarkdown("\n");
     }
+  }
 
+  private addFilterExamples(
+    md: vscode.MarkdownString,
+    filterInfo: ShopifyFilterDefinition,
+    config: vscode.WorkspaceConfiguration
+  ): void {
     if (
       config.get("showFilterExamples", true) &&
       filterInfo.examples &&
@@ -140,19 +241,30 @@ export class LiquidHoverProvider implements vscode.HoverProvider {
         md.appendMarkdown(`\`\`\`liquid\n${example}\n\`\`\`\n\n`);
       });
     }
-
-    return md;
   }
 
   private createVariableHoverContent(
-    variable: any,
-    objectInfo: any,
+    variable: LiquidVariable,
+    objectInfo: ShopifyObjectDefinition,
     config: vscode.WorkspaceConfiguration
   ): vscode.MarkdownString {
     const md = new vscode.MarkdownString();
     md.isTrusted = true;
     md.supportHtml = true;
 
+    this.addVariableHeader(md, variable, objectInfo, config);
+    this.addPropertyInfo(md, variable, objectInfo);
+    this.addAvailableProperties(md, objectInfo, config);
+
+    return md;
+  }
+
+  private addVariableHeader(
+    md: vscode.MarkdownString,
+    variable: LiquidVariable,
+    objectInfo: ShopifyObjectDefinition,
+    config: vscode.WorkspaceConfiguration
+  ): void {
     md.appendMarkdown(`## \`${variable.fullPath}\`\n\n`);
 
     if (config.get("showTypes", true)) {
@@ -164,9 +276,15 @@ export class LiquidHoverProvider implements vscode.HoverProvider {
     }
 
     if (config.get("showDeprecatedWarnings", true) && objectInfo.deprecated) {
-      md.appendMarkdown(`⚠️ **Deprecated:** ${objectInfo.deprecated}\n\n`);
+      md.appendMarkdown(`⚠️ **Deprecated:** This object is deprecated\n\n`);
     }
+  }
 
+  private addPropertyInfo(
+    md: vscode.MarkdownString,
+    variable: LiquidVariable,
+    objectInfo: ShopifyObjectDefinition
+  ): void {
     if (variable.propertyPath && variable.propertyPath.length > 0) {
       const propertyInfo = this.getPropertyInfo(
         objectInfo,
@@ -184,7 +302,13 @@ export class LiquidHoverProvider implements vscode.HoverProvider {
         }
       }
     }
+  }
 
+  private addAvailableProperties(
+    md: vscode.MarkdownString,
+    objectInfo: ShopifyObjectDefinition,
+    config: vscode.WorkspaceConfiguration
+  ): void {
     if (
       objectInfo.properties &&
       Object.keys(objectInfo.properties).length > 0
@@ -222,11 +346,12 @@ export class LiquidHoverProvider implements vscode.HoverProvider {
         );
       }
     }
-
-    return md;
   }
 
-  private getPropertyInfo(objectInfo: any, propertyPath: string[]): any {
+  private getPropertyInfo(
+    objectInfo: ShopifyObjectDefinition,
+    propertyPath: string[]
+  ): any {
     let current = objectInfo.properties;
 
     for (const prop of propertyPath) {
